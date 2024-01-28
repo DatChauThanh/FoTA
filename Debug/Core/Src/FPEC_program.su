@@ -1,0 +1,7 @@
+../Core/Src/FPEC_program.c:52:6:MFPEC_u8ProgramHalfWordFlash	16	static
+../Core/Src/FPEC_program.c:75:7:MFPEC_u8ProgramOneWordFlash	32	static
+../Core/Src/FPEC_program.c:88:6:MFPEC_u8ProgramFlashBuffer	32	static
+../Core/Src/FPEC_program.c:103:6:MFPEC_u8ProgramFlash	32	static
+../Core/Src/FPEC_program.c:130:6:MFPEC_voidErasePage	16	static
+../Core/Src/FPEC_program.c:156:6:MFPEC_voidEraseAppArea	24	static
+../Core/Src/FPEC_program.c:164:8:MFPEC_voidReadWord	24	static
