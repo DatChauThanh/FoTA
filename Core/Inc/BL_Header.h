@@ -19,7 +19,9 @@ typedef void (*Application_t)(void);
 
 #define BOOTLOADER_IMAGE			(0x08000000)
 #define ACTIVE_IMAGE              	(0x08005000)      // Origin + Bootloader size (20kB)
+#define ACTIVE_IMAGE_START_ADDRESS	ACTIVE_IMAGE
 #define BACKUP_IMAGE              	(0x0800A800)      // Origin + Bootloader size (20kB) + App1 Bank (22kB)
+#define BACKUP_IMAGE_START_ADDRESS	BACKUP_IMAGE
 #define FLASH_BANK_SIZE         	(0X5800)          // 22kB
 #define FLASH_PAGE_SIZE_USER    	(0x400)           // 1kB
 #define FLASH_BANK_NUMOFPAGE         	(22)          	  // 22 Page

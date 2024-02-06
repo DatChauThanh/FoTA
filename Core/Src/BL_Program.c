@@ -274,7 +274,42 @@ void BL_voidUpdateHeaders(void)
 
 void BL_voidReceiveUpdate(void)
 {
+	uint8_t  Local_u8RecordCounter                                = BL_RESET_COUNTER_TO_START_NEW_REC ;
+	uint8_t  Local_u8GatewayRequest                               = BL_INITIALIZE_WITH_FALSE;
+	uint32_t Local_u32InactiveImageAddressCounter                 = ACTIVE_IMAGE_START_ADDRESS;
+	uint32_t Local_u32SizeOfCode 								  = BL_ReadAddressData(FLAG_STATUS_SIZE_ACTIVE_REGION_ADDRESS);
 
+	FLASH_EraseInitTypeDef Local_eraseInfo;
+	uint32_t Local_u32PageError;
+	// Erase the Active region.
+	Local_eraseInfo.TypeErase = FLASH_TYPEERASE_PAGES;
+	Local_eraseInfo.Banks = FLASH_BANK_1;
+	Local_eraseInfo.PageAddress = ACTIVE_IMAGE;
+	Local_eraseInfo.NbPages =	FLASH_BANK_NUMOFPAGE;
+
+	HAL_FLASH_Unlock(); //Unlocks the flash memory
+	HAL_FLASHEx_Erase(&Local_eraseInfo, &Local_u32PageError); //Deletes given sectors
+	HAL_FLASH_Lock();  //Locks again the flash memory
+
+	//Structure CAN Transmit
+	TxHeader.IDE = CAN_ID_STD;
+	TxHeader.RTR = CAN_RTR_DATA;
+	TxHeader.StdId = NODE_ID_ONE;  // ID
+	TxHeader.DLC = HEADER_DATA_LENGTH;  // data length
+	TxData[0] = UDS_MCU_ACKNOWLEDGE_HEADER_RECEIVED;
+	HAL_CAN_AddTxMessage(&hcan, &TxHeader, TxData, &TxMailbox);
+
+	//Loop to receive code update
+	while(Local_u32SizeOfCode)
+	{
+		while(HAL_CAN_GetRxMessage(&hcan, CAN_RX_FIFO0, &RxHeader, local_u8DataArray) != HAL_OK){}
+		if(RxData[0] == UDS_GWY_REQUEST_SENDING_LINE_OF_CODE)
+		{
+
+		}
+
+
+	}
 }
 
 void BL_voidMakeSoftWareReset(void)
@@ -285,7 +320,7 @@ void BL_voidMakeSoftWareReset(void)
 
 	hiwdg.Instance = IWDG;
 	hiwdg.Init.Prescaler = IWDG_PRESCALER_4;
-	hiwdg.Init.Reload = 4095;
+	hiwdg.Init.Reload = 9;
 	if (HAL_IWDG_Init(&hiwdg) != HAL_OK)
 	{
 		Error_Handler();
