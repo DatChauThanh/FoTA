@@ -50,7 +50,6 @@ typedef struct
 
   uint32_t Reload;     /*!< Specifies the IWDG down-counter reload value.
                             This parameter must be a number between Min_Data = 0 and Max_Data = 0x0FFF */
-
 } IWDG_InitTypeDef;
 
 /**

@@ -66,8 +66,8 @@ all: main-build
 main-build: BlinkLed_App1.elf secondary-outputs
 
 # Tool invocations
-BlinkLed_App1.elf BlinkLed_App1.map: $(OBJS) $(USER_OBJS) C:\Users\ACER\STM32CubeIDE\workspace_1.13.1\BlinkLed_App1\STM32F103C8TX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "BlinkLed_App1.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"C:\Users\ACER\STM32CubeIDE\workspace_1.13.1\BlinkLed_App1\STM32F103C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="BlinkLed_App1.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+BlinkLed_App1.elf BlinkLed_App1.map: $(OBJS) $(USER_OBJS) C:\Users\CHD9HC\Desktop\FoTA\STM32F103C8TX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "BlinkLed_App1.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"C:\Users\CHD9HC\Desktop\FoTA\STM32F103C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="BlinkLed_App1.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

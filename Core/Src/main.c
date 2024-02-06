@@ -40,9 +40,14 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
-CAN_HandleTypeDef hcan;
 
+CAN_HandleTypeDef hcan;
 IWDG_HandleTypeDef hiwdg;
+CAN_TxHeaderTypeDef TxHeader;
+CAN_RxHeaderTypeDef RxHeader;
+uint8_t TxData[8];
+uint8_t RxData[8];
+uint32_t TxMailbox;
 
 /* USER CODE BEGIN PV */
 volatile bool blink = true;
@@ -52,7 +57,6 @@ volatile bool blink = true;
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_CAN_Init(void);
-static void MX_IWDG_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -124,9 +128,13 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_CAN_Init();
-  MX_IWDG_Init();
+  //MX_IWDG_Init();
   /* USER CODE BEGIN 2 */
+  BL_voidBootLoader_Init();
+  HAL_CAN_Start(&hcan);
 
+   // Activate the notification
+  HAL_CAN_ActivateNotification(&hcan, CAN_IT_RX_FIFO0_MSG_PENDING);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -213,6 +221,7 @@ static void MX_CAN_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN CAN_Init 2 */
+  //Initialize Variable for CAN
 
   /* USER CODE END CAN_Init 2 */
 

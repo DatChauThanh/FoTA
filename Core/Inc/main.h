@@ -44,7 +44,13 @@ extern "C" {
 #define Bootloader_Address 0x08000000
 
 /* USER CODE END EC */
-
+extern CAN_HandleTypeDef hcan;
+extern IWDG_HandleTypeDef hiwdg;
+extern CAN_TxHeaderTypeDef TxHeader;
+extern CAN_RxHeaderTypeDef RxHeader;
+extern uint8_t TxData[8];
+extern uint8_t RxData[8];
+extern uint32_t TxMailbox;
 /* Exported macro ------------------------------------------------------------*/
 /* USER CODE BEGIN EM */
 void DeInit();
