@@ -1,9 +1,6 @@
-../Core/Src/main.c:66:6:HAL_GPIO_EXTI_Callback	2
-../Core/Src/main.c:73:6:DeInit	1
-../Core/Src/main.c:90:6:JumpToBootLoader	1
-../Core/Src/main.c:106:5:main	1
-../Core/Src/main.c:156:6:SystemClock_Config	3
-../Core/Src/main.c:197:13:MX_CAN_Init	2
-../Core/Src/main.c:235:13:MX_IWDG_Init	2
-../Core/Src/main.c:263:13:MX_GPIO_Init	1
-../Core/Src/main.c:306:6:Error_Handler	1
+../Core/Src/main.c:77:5:main	3
+../Core/Src/main.c:157:6:SystemClock_Config	3
+../Core/Src/main.c:198:13:MX_CAN_Init	2
+../Core/Src/main.c:248:13:MX_IWDG_Init	2
+../Core/Src/main.c:276:13:MX_GPIO_Init	1
+../Core/Src/main.c:319:6:Error_Handler	1

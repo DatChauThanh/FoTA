@@ -31,7 +31,11 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "FPEC_interface.h"
+#include "Rte_SendUpdatePort.h"
+#include "Rte_DecryptPort.h"
+#include "Rte_ReceiveUpatePort.h"
+#include "Rte_UserInterfacePort.h"
+
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -41,7 +45,6 @@ extern "C" {
 
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
-#define Bootloader_Address 0x08000000
 
 /* USER CODE END EC */
 extern CAN_HandleTypeDef hcan;
@@ -53,16 +56,7 @@ extern uint8_t RxData[8];
 extern uint32_t TxMailbox;
 /* Exported macro ------------------------------------------------------------*/
 /* USER CODE BEGIN EM */
-void DeInit();
-typedef void (application_t) (void);
 
-typedef struct
-{
-    uint32_t		stack_addr;     // Stack Pointer
-    application_t*	func_p;        // Program Counter
-} JumpStruct;
-
-void JumpToBootLoader(const uint32_t address);
 /* USER CODE END EM */
 
 /* Exported functions prototypes ---------------------------------------------*/

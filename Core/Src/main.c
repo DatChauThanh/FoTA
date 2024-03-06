@@ -21,6 +21,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "Transmit.h"
+#include "Decrypt_Interface.h"
 
 /* USER CODE END Includes */
 
@@ -40,7 +42,7 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
-
+CAN_FilterTypeDef canfilterconfig;
 CAN_HandleTypeDef hcan;
 IWDG_HandleTypeDef hiwdg;
 CAN_TxHeaderTypeDef TxHeader;
@@ -48,9 +50,11 @@ CAN_RxHeaderTypeDef RxHeader;
 uint8_t TxData[8];
 uint8_t RxData[8];
 uint32_t TxMailbox;
+DBGMCU_TypeDef *dbg;
+
 
 /* USER CODE BEGIN PV */
-volatile bool blink = true;
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -63,39 +67,6 @@ static void MX_CAN_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
-{
-	if(GPIO_Pin == IRQ_1_Pin)
-	{
-		blink = !blink ;
-	}
-}
-void DeInit()
-{
-	//-- reset peripherals to guarantee flawless start of user application
-	HAL_GPIO_DeInit(IRQ_LED_GPIO_Port, IRQ_LED_Pin);
-	HAL_GPIO_DeInit(LED_GPIO_Port, LED_Pin);
-	HAL_GPIO_DeInit(IRQ_1_GPIO_Port, IRQ_1_Pin);
-	  __HAL_RCC_GPIOC_CLK_DISABLE();
-	  __HAL_RCC_GPIOD_CLK_DISABLE();
-	  __HAL_RCC_GPIOB_CLK_DISABLE();
-	  __HAL_RCC_GPIOA_CLK_DISABLE();
-	HAL_RCC_DeInit();
-	HAL_DeInit();
-	SysTick->CTRL = 0;
-	SysTick->LOAD = 0;
-	SysTick->VAL = 0;
-}
-
-void JumpToBootLoader(const uint32_t address)
-{
-	const JumpStruct* vector_p = (JumpStruct*)address;
-
-	DeInit();
-	/* let's do The Jump! */
-	/* Jump, used asm to avoid stack optimization */
-	asm("msr msp, %0; bx %1;" : : "r"(vector_p->stack_addr), "r"(vector_p->func_p));
-}
 
 /* USER CODE END 0 */
 
@@ -106,7 +77,7 @@ void JumpToBootLoader(const uint32_t address)
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-
+  uint8_t state ;
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -130,17 +101,47 @@ int main(void)
   MX_CAN_Init();
   //MX_IWDG_Init();
   /* USER CODE BEGIN 2 */
-  BL_voidBootLoader_Init();
+  //Transmit_InitializeModule();
+  //uint8_t state ;
+
   HAL_CAN_Start(&hcan);
 
-   // Activate the notification
-  HAL_CAN_ActivateNotification(&hcan, CAN_IT_RX_FIFO0_MSG_PENDING);
+
+  Transmit_InitializeModule();
+  Decrypt_Address_Read_Init();
   /* USER CODE END 2 */
+
+	RTE_WRITE_SYSTEM_STATE(SYS_DECRYPT);
+	RTE_WRITE_HEADER_ACK_FLAG(HEADER_SET);
+	RTE_WRITE_NODE_ID(1);
+	RTE_WRITE_CODE_SIZE(0x12);
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+
+	  while(1){
+
+			RTE_READ_SYSTEM_STATE(&state);
+//			if (state == SYS_REC_UPDATE){
+//				ReceiveUpdate_MainFunction();
+//			}
+			if (state == SYS_DECRYPT)
+			{
+				Decrypt_MainFunction();
+			}
+			else if (state == SYS_SEND_UPDATE)
+			{
+				Transmit_MainFunction();
+			}
+			else
+			{
+
+			}
+//			UserInterface_MainFunction();
+
+	  }
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -216,13 +217,25 @@ static void MX_CAN_Init(void)
   hcan.Init.AutoRetransmission = DISABLE;
   hcan.Init.ReceiveFifoLocked = DISABLE;
   hcan.Init.TransmitFifoPriority = DISABLE;
+
   if (HAL_CAN_Init(&hcan) != HAL_OK)
   {
     Error_Handler();
   }
   /* USER CODE BEGIN CAN_Init 2 */
   //Initialize Variable for CAN
+  	canfilterconfig.FilterActivation = CAN_FILTER_ENABLE;
+	canfilterconfig.FilterBank = 0;  // which filter bank to use from the assigned ones
+	canfilterconfig.FilterFIFOAssignment = CAN_FILTER_FIFO0;
+	canfilterconfig.FilterIdHigh = 0x000;
+	canfilterconfig.FilterIdLow = 0;
+	canfilterconfig.FilterMaskIdHigh = 0;
+	canfilterconfig.FilterMaskIdLow = 0;
+	canfilterconfig.FilterMode = CAN_FILTERMODE_IDMASK;
+	canfilterconfig.FilterScale = CAN_FILTERSCALE_32BIT;
+	canfilterconfig.SlaveStartFilterBank = 10;  // how many filters to assign to the CAN1 (master can)
 
+	HAL_CAN_ConfigFilter(&hcan, &canfilterconfig);
   /* USER CODE END CAN_Init 2 */
 
 }
