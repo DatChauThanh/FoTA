@@ -26,7 +26,7 @@
 #include "Rte_SendUpdatePort.h"
 #include "Transmit.h"
 #include "Transmit_private.h"
-#include "CAN_IF.h"
+#include "Can_Interface.h"
 /******************************************************************************
 * Module Preprocessor Constants
 *******************************************************************************/
@@ -47,6 +47,8 @@ static uint8_t                Static_uint8NodeId;
 static uint16_t               Static_uint16PacketsCounter;
 static uint16_t               Static_uint16NumberOfPackets;
 static uint8_t                Static_uint8NumOfBytesInLastPacket;
+static float 				  Static_InstallPercentage;
+static uint8_t 				  Static_InstallUpdateProgeress;
 
 static TransmitStates_t     Static_StateVariable;
 static State_PtrToFunction  Static_ArrayOfStates[NUBER_OF_STATES];
@@ -68,6 +70,8 @@ Std_ReturnType Transmit_InitializeModule(void)
    Static_uint16PacketsCounter                 = INITIALIZE_WITH_ZERO;
    Static_uint16NumberOfPackets                = INITIALIZE_WITH_ZERO;
    Static_uint8NumOfBytesInLastPacket          = INITIALIZE_WITH_ZERO;
+   Static_InstallPercentage					   = INITIALIZE_WITH_ZERO;
+   Static_InstallUpdateProgeress			   = INITIALIZE_WITH_ZERO;
    // Initialize current state variable
    Static_StateVariable                        = IDLE_STATE;
    // Fill state array with function represent each state
@@ -135,14 +139,14 @@ static Std_ReturnType Transmit_GetTransmitHeader(void *Cpy_voidPtr)
    Transmit_HandleHeader(Local_uint32CodeSize, Local_uint32CrcValue, Local_HeaderBuffer);
    /************************Sequence Between Gateway and Boot_loader********************/
 
-//   // Request Program control.
-//   CAN_IF_Transmit_UDS_Request(Local_uint8NodeId, UDS_CONTROL_SESSION);
-//   // Wait Ack from BL
-//   CAN_IF_Receive_UDS_Respond(&Local_uint8ReceivedAck);
-//
-//   // Check received Ack
-//   if(UDS_MCU_ACCEPT_UPGRADE_REQUEST == Local_uint8ReceivedAck)
-//   {
+   // Request Program control.
+   CAN_IF_Transmit_UDS_Request(Local_uint8NodeId, UDS_CONTROL_SESSION);
+   // Wait Ack from BL
+   CAN_IF_Receive_UDS_Respond(&Local_uint8ReceivedAck);
+
+   // Check received Ack
+   if(UDS_MCU_ACCEPT_UPGRADE_REQUEST == Local_uint8ReceivedAck)
+   {
       // Request sending Header.
       CAN_IF_Transmit_UDS_Request(Local_uint8NodeId, UDS_GWY_REQUEST_SENDING_HEADER);
 
@@ -158,11 +162,11 @@ static Std_ReturnType Transmit_GetTransmitHeader(void *Cpy_voidPtr)
       {
          //TODO: Handle the situation that the Boot_loader Doesn't reply correctly.
       }
-//   }
-//   else
-//   {
-//      //TODO: Handle the situation that the Boot_loader Doesn't reply correctly.
-//   }
+   }
+   else
+   {
+      //TODO: Handle the situation that the Boot_loader Doesn't reply correctly.
+   }
    // Wait Ack from BL
    CAN_IF_Receive_UDS_Respond(&Local_uint8ReceivedAck);
 
@@ -226,6 +230,10 @@ static Std_ReturnType Transmit_ConsumeTransmitData(void *Cpy_voidPtr)
 					// Change System State To De_crypt state.
 					RTE_WRITE_SYSTEM_STATE(SYS_DECRYPT);
 				}
+				Static_InstallPercentage = ((float)Static_uint16PacketsCounter /(float) Static_uint16NumberOfPackets) ;
+				Static_InstallUpdateProgeress = Static_InstallPercentage * 100 ;
+				/* Write to RTE to Signal UserIntrface Module */
+				RTE_WRITE_DOWNLOAD_PROGRESS (Static_InstallUpdateProgeress);
             }
             else
             {
@@ -242,6 +250,8 @@ static Std_ReturnType Transmit_ConsumeTransmitData(void *Cpy_voidPtr)
             {
                // Go to Finish State.
                Static_StateVariable = FINISHING_STATE;
+               Static_InstallUpdateProgeress = 100;
+               RTE_WRITE_DOWNLOAD_PROGRESS (Static_InstallUpdateProgeress);
             }
             else
             {

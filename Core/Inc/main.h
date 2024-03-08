@@ -47,6 +47,7 @@ extern "C" {
 /* USER CODE BEGIN EC */
 
 /* USER CODE END EC */
+extern I2C_TypeDef hi2c;
 extern CAN_HandleTypeDef hcan;
 extern IWDG_HandleTypeDef hiwdg;
 extern CAN_TxHeaderTypeDef TxHeader;

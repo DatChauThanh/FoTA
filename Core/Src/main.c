@@ -23,7 +23,7 @@
 /* USER CODE BEGIN Includes */
 #include "Transmit.h"
 #include "Decrypt_Interface.h"
-
+#include "UserInterface_Interface.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -42,19 +42,18 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
-CAN_FilterTypeDef canfilterconfig;
+
 CAN_HandleTypeDef hcan;
 IWDG_HandleTypeDef hiwdg;
+I2C_TypeDef hi2c;
+
+/* USER CODE BEGIN PV */
+CAN_FilterTypeDef canfilterconfig;
 CAN_TxHeaderTypeDef TxHeader;
 CAN_RxHeaderTypeDef RxHeader;
 uint8_t TxData[8];
 uint8_t RxData[8];
 uint32_t TxMailbox;
-DBGMCU_TypeDef *dbg;
-
-
-/* USER CODE BEGIN PV */
-
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -114,7 +113,7 @@ int main(void)
 	RTE_WRITE_SYSTEM_STATE(SYS_DECRYPT);
 	RTE_WRITE_HEADER_ACK_FLAG(HEADER_SET);
 	RTE_WRITE_NODE_ID(1);
-	RTE_WRITE_CODE_SIZE(0x12);
+	RTE_WRITE_CODE_SIZE(0x2520);
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
@@ -124,10 +123,10 @@ int main(void)
 	  while(1){
 
 			RTE_READ_SYSTEM_STATE(&state);
-//			if (state == SYS_REC_UPDATE){
-//				ReceiveUpdate_MainFunction();
-//			}
-			if (state == SYS_DECRYPT)
+			if (state == SYS_REC_UPDATE){
+		//		ReceiveUpdate_MainFunction();
+			}
+			else if (state == SYS_DECRYPT)
 			{
 				Decrypt_MainFunction();
 			}
@@ -137,9 +136,9 @@ int main(void)
 			}
 			else
 			{
-
+				//do nothing
 			}
-//			UserInterface_MainFunction();
+			UserInterface_MainFunction();
 
 	  }
     /* USER CODE END WHILE */
@@ -245,28 +244,28 @@ static void MX_CAN_Init(void)
   * @param None
   * @retval None
   */
-static void MX_IWDG_Init(void)
-{
-
-  /* USER CODE BEGIN IWDG_Init 0 */
-
-  /* USER CODE END IWDG_Init 0 */
-
-  /* USER CODE BEGIN IWDG_Init 1 */
-
-  /* USER CODE END IWDG_Init 1 */
-  hiwdg.Instance = IWDG;
-  hiwdg.Init.Prescaler = IWDG_PRESCALER_4;
-  hiwdg.Init.Reload = 4095;
-  if (HAL_IWDG_Init(&hiwdg) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /* USER CODE BEGIN IWDG_Init 2 */
-
-  /* USER CODE END IWDG_Init 2 */
-
-}
+//static void MX_IWDG_Init(void)
+//{
+//
+//  /* USER CODE BEGIN IWDG_Init 0 */
+//
+//  /* USER CODE END IWDG_Init 0 */
+//
+//  /* USER CODE BEGIN IWDG_Init 1 */
+//
+//  /* USER CODE END IWDG_Init 1 */
+//  hiwdg.Instance = IWDG;
+//  hiwdg.Init.Prescaler = IWDG_PRESCALER_4;
+//  hiwdg.Init.Reload = 4095;
+//  if (HAL_IWDG_Init(&hiwdg) != HAL_OK)
+//  {
+//    Error_Handler();
+//  }
+//  /* USER CODE BEGIN IWDG_Init 2 */
+//
+//  /* USER CODE END IWDG_Init 2 */
+//
+//}
 
 /**
   * @brief GPIO Initialization Function

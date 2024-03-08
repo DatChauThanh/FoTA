@@ -1,4 +1,5 @@
-Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
+Core/Src/Can_Interface.o: ../Core/Src/Can_Interface.c \
+ ../Core/Inc/Can_Interface.h ../Core/Inc/main.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h \
  ../Core/Inc/stm32f1xx_hal_conf.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc.h \
@@ -24,10 +25,9 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_iwdg.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h \
  ../Core/Inc/Rte_SendUpdatePort.h ../Core/Inc/Rte.h \
- ../Core/Inc/Rte_DataTypes.h ../Core/Inc/main.h \
- ../Core/Inc/Rte_DecryptPort.h ../Core/Inc/Rte_ReceiveUpatePort.h \
- ../Core/Inc/Rte_UserInterfacePort.h ../Core/Inc/Transmit.h \
- ../Core/Inc/Decrypt_Interface.h ../Core/Inc/UserInterface_Interface.h
+ ../Core/Inc/Rte_DataTypes.h ../Core/Inc/Rte_DecryptPort.h \
+ ../Core/Inc/Rte_ReceiveUpatePort.h ../Core/Inc/Rte_UserInterfacePort.h
+../Core/Inc/Can_Interface.h:
 ../Core/Inc/main.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h:
 ../Core/Inc/stm32f1xx_hal_conf.h:
@@ -56,10 +56,6 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 ../Core/Inc/Rte_SendUpdatePort.h:
 ../Core/Inc/Rte.h:
 ../Core/Inc/Rte_DataTypes.h:
-../Core/Inc/main.h:
 ../Core/Inc/Rte_DecryptPort.h:
 ../Core/Inc/Rte_ReceiveUpatePort.h:
 ../Core/Inc/Rte_UserInterfacePort.h:
-../Core/Inc/Transmit.h:
-../Core/Inc/Decrypt_Interface.h:
-../Core/Inc/UserInterface_Interface.h:

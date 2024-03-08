@@ -83,7 +83,6 @@ void Decrypt_MainFunction (void)
 							status = RTE_WRITE_DECRYPTED_DATA_BUFFER (Global_PlainDataPtr) ;
 							 /*Change buffer flag value to set "Data send point "*/
 							RTE_WRITE_DECRYPTED_DATA_BUFFER_FLAG(BUFFER_SET);
-
 							 /*Change system flag to SEND , "Data send point "*/
 							RTE_WRITE_SYSTEM_STATE(SYS_SEND_UPDATE);
 					   }												

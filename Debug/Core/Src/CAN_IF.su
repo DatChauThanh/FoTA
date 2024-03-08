@@ -1,4 +1,0 @@
-../Core/Src/CAN_IF.c:9:19:CAN_IF_Transmit_UDS_Request	24	static
-../Core/Src/CAN_IF.c:28:19:CAN_IF_Trasmit_Data_Frame	24	static
-../Core/Src/CAN_IF.c:52:19:CAN_IF_Receive_UDS_Respond	16	static
-../Core/Src/CAN_IF.c:61:19:CAN_IF_Receive_Data_Frame	24	static

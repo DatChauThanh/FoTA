@@ -5,8 +5,8 @@
  *      Author: Chau Thanh Dat
  */
 
-#ifndef INC_CAN_IF_H_
-#define INC_CAN_IF_H_
+#ifndef INC_CAN_INTERFACE_H_
+#define INC_CAN_INTERFACE_H_
 
 #include "main.h"
 
@@ -18,4 +18,4 @@ HAL_StatusTypeDef CAN_IF_Trasmit_Data_Frame(uint8_t Node, const uint8_t *DataBuf
 HAL_StatusTypeDef CAN_IF_Receive_UDS_Respond(uint8_t *UDS_Req);
 HAL_StatusTypeDef CAN_IF_Receive_Data_Frame(uint8_t *DataBuffer);
 
-#endif /* INC_CAN_IF_H_ */
+#endif /* INC_CAN_INTERFACE_H_ */

@@ -27,7 +27,7 @@ Core/Src/Transmit.o: ../Core/Src/Transmit.c ../Core/Inc/Rte_DataTypes.h \
  ../Core/Inc/Rte_DataTypes.h ../Core/Inc/Rte_DecryptPort.h \
  ../Core/Inc/Rte_ReceiveUpatePort.h ../Core/Inc/Rte_UserInterfacePort.h \
  ../Core/Inc/Rte_SendUpdatePort.h ../Core/Inc/Transmit.h \
- ../Core/Inc/Transmit_private.h ../Core/Inc/CAN_IF.h
+ ../Core/Inc/Transmit_private.h ../Core/Inc/Can_Interface.h
 ../Core/Inc/Rte_DataTypes.h:
 ../Core/Inc/main.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h:
@@ -63,4 +63,4 @@ Core/Src/Transmit.o: ../Core/Src/Transmit.c ../Core/Inc/Rte_DataTypes.h \
 ../Core/Inc/Rte_SendUpdatePort.h:
 ../Core/Inc/Transmit.h:
 ../Core/Inc/Transmit_private.h:
-../Core/Inc/CAN_IF.h:
+../Core/Inc/Can_Interface.h:

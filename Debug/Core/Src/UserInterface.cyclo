@@ -1,0 +1,10 @@
+../Core/Src/UserInterface.c:29:6:UserInterface_voidInit	1
+../Core/Src/UserInterface.c:42:6:UserInterface_MainFunction	16
+../Core/Src/UserInterface.c:230:13:Interface_IdleScreen	1
+../Core/Src/UserInterface.c:245:13:Interface_GetResponseScreen	1
+../Core/Src/UserInterface.c:265:13:Interface_DownloadingScreen	1
+../Core/Src/UserInterface.c:280:13:Interface_UpdateDownloadingScreen	1
+../Core/Src/UserInterface.c:294:13:Interface_DoneScreen	1
+../Core/Src/UserInterface.c:304:13:Interface_CleanScrean	1
+../Core/Src/UserInterface.c:310:13:Interface_ProcessSwipeButton	4
+../Core/Src/UserInterface.c:347:13:Interface_ProcessOkButton	4
