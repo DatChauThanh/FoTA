@@ -40,21 +40,21 @@ extern "C" {
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
-
+extern I2C_HandleTypeDef hi2c1;
+extern CAN_HandleTypeDef hcan;
+extern CAN_TxHeaderTypeDef TxHeader;
+extern CAN_RxHeaderTypeDef RxHeader;
+extern UART_HandleTypeDef huart1;
+extern uint8_t TxData[8];
+extern uint8_t RxData[8];
+extern uint32_t TxMailbox;
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
 
 /* USER CODE END EC */
-extern I2C_TypeDef hi2c;
-extern CAN_HandleTypeDef hcan;
-extern IWDG_HandleTypeDef hiwdg;
-extern CAN_TxHeaderTypeDef TxHeader;
-extern CAN_RxHeaderTypeDef RxHeader;
-extern uint8_t TxData[8];
-extern uint8_t RxData[8];
-extern uint32_t TxMailbox;
+
 /* Exported macro ------------------------------------------------------------*/
 /* USER CODE BEGIN EM */
 
@@ -70,11 +70,6 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin);
 /* Private defines -----------------------------------------------------------*/
 #define LED_Pin GPIO_PIN_13
 #define LED_GPIO_Port GPIOC
-#define IRQ_LED_Pin GPIO_PIN_14
-#define IRQ_LED_GPIO_Port GPIOC
-#define IRQ_1_Pin GPIO_PIN_1
-#define IRQ_1_GPIO_Port GPIOA
-#define IRQ_1_EXTI_IRQn EXTI1_IRQn
 
 /* USER CODE BEGIN Private defines */
 

@@ -65,7 +65,7 @@ HAL_StatusTypeDef CAN_IF_Receive_Data_Frame(uint8_t *DataBuffer){
 	// Get respond from Bootloader
 	uint8_t Local_u8DataLength = 8;
 	for(uint8_t index = 0 ; index < Local_u8DataLength ; index++ ){
-	   DataBuffer[index] == RxData[index];
+	   DataBuffer[index] = RxData[index];
     }
 	return HAL_OK;
 }

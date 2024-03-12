@@ -251,7 +251,7 @@ static Std_ReturnType Transmit_ConsumeTransmitData(void *Cpy_voidPtr)
                // Go to Finish State.
                Static_StateVariable = FINISHING_STATE;
                Static_InstallUpdateProgeress = 100;
-               RTE_WRITE_DOWNLOAD_PROGRESS (Static_InstallUpdateProgeress);
+               RTE_WRITE_DOWNLOAD_PROGRESS(Static_InstallUpdateProgeress);
             }
             else
             {
