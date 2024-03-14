@@ -17,7 +17,8 @@
  * Description: Initialize ReceiveUpdate SWC. 
  ***************************************************************************/
 void UserInterface_voidInit(void);
-void UserInterface_MainFunction (void);
+
+void UserInterface_MainFunction(void);
 
 
 

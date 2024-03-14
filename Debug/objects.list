@@ -1,6 +1,8 @@
 "./Core/Src/Can_Interface.o"
 "./Core/Src/Decrypt.o"
+"./Core/Src/FlashReprogram_Interface.o"
 "./Core/Src/FontsSSD1306.o"
+"./Core/Src/ReceiveUpdate.o"
 "./Core/Src/Rte.o"
 "./Core/Src/SSD1306.o"
 "./Core/Src/Transmit.o"

@@ -7,7 +7,9 @@
 C_SRCS += \
 ../Core/Src/Can_Interface.c \
 ../Core/Src/Decrypt.c \
+../Core/Src/FlashReprogram_Interface.c \
 ../Core/Src/FontsSSD1306.c \
+../Core/Src/ReceiveUpdate.c \
 ../Core/Src/Rte.c \
 ../Core/Src/SSD1306.c \
 ../Core/Src/Transmit.c \
@@ -22,7 +24,9 @@ C_SRCS += \
 OBJS += \
 ./Core/Src/Can_Interface.o \
 ./Core/Src/Decrypt.o \
+./Core/Src/FlashReprogram_Interface.o \
 ./Core/Src/FontsSSD1306.o \
+./Core/Src/ReceiveUpdate.o \
 ./Core/Src/Rte.o \
 ./Core/Src/SSD1306.o \
 ./Core/Src/Transmit.o \
@@ -37,7 +41,9 @@ OBJS += \
 C_DEPS += \
 ./Core/Src/Can_Interface.d \
 ./Core/Src/Decrypt.d \
+./Core/Src/FlashReprogram_Interface.d \
 ./Core/Src/FontsSSD1306.d \
+./Core/Src/ReceiveUpdate.d \
 ./Core/Src/Rte.d \
 ./Core/Src/SSD1306.d \
 ./Core/Src/Transmit.d \
@@ -57,7 +63,7 @@ Core/Src/%.o Core/Src/%.su Core/Src/%.cyclo: ../Core/Src/%.c Core/Src/subdir.mk
 clean: clean-Core-2f-Src
 
 clean-Core-2f-Src:
-	-$(RM) ./Core/Src/Can_Interface.cyclo ./Core/Src/Can_Interface.d ./Core/Src/Can_Interface.o ./Core/Src/Can_Interface.su ./Core/Src/Decrypt.cyclo ./Core/Src/Decrypt.d ./Core/Src/Decrypt.o ./Core/Src/Decrypt.su ./Core/Src/FontsSSD1306.cyclo ./Core/Src/FontsSSD1306.d ./Core/Src/FontsSSD1306.o ./Core/Src/FontsSSD1306.su ./Core/Src/Rte.cyclo ./Core/Src/Rte.d ./Core/Src/Rte.o ./Core/Src/Rte.su ./Core/Src/SSD1306.cyclo ./Core/Src/SSD1306.d ./Core/Src/SSD1306.o ./Core/Src/SSD1306.su ./Core/Src/Transmit.cyclo ./Core/Src/Transmit.d ./Core/Src/Transmit.o ./Core/Src/Transmit.su ./Core/Src/UserInterface.cyclo ./Core/Src/UserInterface.d ./Core/Src/UserInterface.o ./Core/Src/UserInterface.su ./Core/Src/main.cyclo ./Core/Src/main.d ./Core/Src/main.o ./Core/Src/main.su ./Core/Src/stm32f1xx_hal_msp.cyclo ./Core/Src/stm32f1xx_hal_msp.d ./Core/Src/stm32f1xx_hal_msp.o ./Core/Src/stm32f1xx_hal_msp.su ./Core/Src/stm32f1xx_it.cyclo ./Core/Src/stm32f1xx_it.d ./Core/Src/stm32f1xx_it.o ./Core/Src/stm32f1xx_it.su ./Core/Src/syscalls.cyclo ./Core/Src/syscalls.d ./Core/Src/syscalls.o ./Core/Src/syscalls.su ./Core/Src/sysmem.cyclo ./Core/Src/sysmem.d ./Core/Src/sysmem.o ./Core/Src/sysmem.su ./Core/Src/system_stm32f1xx.cyclo ./Core/Src/system_stm32f1xx.d ./Core/Src/system_stm32f1xx.o ./Core/Src/system_stm32f1xx.su
+	-$(RM) ./Core/Src/Can_Interface.cyclo ./Core/Src/Can_Interface.d ./Core/Src/Can_Interface.o ./Core/Src/Can_Interface.su ./Core/Src/Decrypt.cyclo ./Core/Src/Decrypt.d ./Core/Src/Decrypt.o ./Core/Src/Decrypt.su ./Core/Src/FlashReprogram_Interface.cyclo ./Core/Src/FlashReprogram_Interface.d ./Core/Src/FlashReprogram_Interface.o ./Core/Src/FlashReprogram_Interface.su ./Core/Src/FontsSSD1306.cyclo ./Core/Src/FontsSSD1306.d ./Core/Src/FontsSSD1306.o ./Core/Src/FontsSSD1306.su ./Core/Src/ReceiveUpdate.cyclo ./Core/Src/ReceiveUpdate.d ./Core/Src/ReceiveUpdate.o ./Core/Src/ReceiveUpdate.su ./Core/Src/Rte.cyclo ./Core/Src/Rte.d ./Core/Src/Rte.o ./Core/Src/Rte.su ./Core/Src/SSD1306.cyclo ./Core/Src/SSD1306.d ./Core/Src/SSD1306.o ./Core/Src/SSD1306.su ./Core/Src/Transmit.cyclo ./Core/Src/Transmit.d ./Core/Src/Transmit.o ./Core/Src/Transmit.su ./Core/Src/UserInterface.cyclo ./Core/Src/UserInterface.d ./Core/Src/UserInterface.o ./Core/Src/UserInterface.su ./Core/Src/main.cyclo ./Core/Src/main.d ./Core/Src/main.o ./Core/Src/main.su ./Core/Src/stm32f1xx_hal_msp.cyclo ./Core/Src/stm32f1xx_hal_msp.d ./Core/Src/stm32f1xx_hal_msp.o ./Core/Src/stm32f1xx_hal_msp.su ./Core/Src/stm32f1xx_it.cyclo ./Core/Src/stm32f1xx_it.d ./Core/Src/stm32f1xx_it.o ./Core/Src/stm32f1xx_it.su ./Core/Src/syscalls.cyclo ./Core/Src/syscalls.d ./Core/Src/syscalls.o ./Core/Src/syscalls.su ./Core/Src/sysmem.cyclo ./Core/Src/sysmem.d ./Core/Src/sysmem.o ./Core/Src/sysmem.su ./Core/Src/system_stm32f1xx.cyclo ./Core/Src/system_stm32f1xx.d ./Core/Src/system_stm32f1xx.o ./Core/Src/system_stm32f1xx.su
 
 .PHONY: clean-Core-2f-Src
 

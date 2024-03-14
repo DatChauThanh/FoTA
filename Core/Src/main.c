@@ -23,7 +23,8 @@
 /* USER CODE BEGIN Includes */
 #include "Transmit.h"
 #include "Decrypt_Interface.h"
-//#include "UserInterface_Interface.h"
+#include "UserInterface_Interface.h"
+#include "ReceiveUpdate_Interface.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -104,7 +105,9 @@ int main(void)
   MX_I2C1_Init();
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
+
   HAL_CAN_Start(&hcan);
+
   Transmit_InitializeModule();
   Decrypt_Address_Read_Init();
 
@@ -118,33 +121,27 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-
-
-
-			RTE_READ_SYSTEM_STATE(&state);
-			if (state == SYS_REC_UPDATE){
-//				ReceiveUpdate_MainFunction();
-			}
-			else if (state == SYS_DECRYPT)
-			{
-				Decrypt_MainFunction();
-			}
-			else if (state == SYS_SEND_UPDATE)
-			{
-				Transmit_MainFunction();
-			}
-			else
-			{
-				//do nothing
-			}
+		RTE_READ_SYSTEM_STATE(&state);
+		if (state == SYS_REC_UPDATE){
+			ReceiveUpdate_MainFunction();
+		}
+		else if (state == SYS_DECRYPT)
+		{
+			Decrypt_MainFunction();
+		}
+		else if (state == SYS_SEND_UPDATE)
+		{
+			Transmit_MainFunction();
+		}
+		else
+		{
+			//do nothing
+		}
 //			UserInterface_MainFunction();
-
-
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
   }
-
   /* USER CODE END 3 */
 }
 
