@@ -46,6 +46,7 @@ void ReceiveUpdate_voidInit(void)
 	Global_ReceivedBytes 			= INITIAL_VALUE;
 	/* Init ESP (uart) interrupt to receive requests */
 	HAL_UART_Receive_IT(&huart1 , Global_HeaderBuffer , 1);
+	FR_voidInitVariables();
 }
 
 void ReceiveUpdate_MainFunction (void)
@@ -160,7 +161,7 @@ void ReceiveUpdate_MainFunction (void)
 				/* Receive packet */
 				HAL_UART_Receive(&huart1, Global_RxBuffer, Global_RemainingBytes, HAL_MAX_DELAY);
 				/* Store Packet */
-				FR_FlashBlockToAddress(Global_RxBuffer , PACKET_SIZE);
+				FR_FlashBlockToAddress(Global_RxBuffer , Global_RemainingBytes);
 				/* Ack last packet */
 				Global_HeaderReqByte = LAST_PACKET_RECEIVED;
 				HAL_UART_Transmit(&huart1, &Global_HeaderReqByte, 1, HAL_MAX_DELAY);
@@ -229,6 +230,9 @@ void ReceiveUpdate_MainFunction (void)
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *UartHandle)
 {
 	Std_ReturnType Local_Error ;
+	//Testing
+	RTE_WRITE_USER_RESPONSE(ACCEPT_UPDATE);
+
 	/* Check of the ESP request */
 	if (NEW_UPDATE_REQUEST == Global_HeaderBuffer[0])
 	{
@@ -240,7 +244,9 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *UartHandle)
 			if (SYS_IDLE == Global_SystemState)
 			{
 				/* Accept the request and change system state */
-				RTE_WRITE_SYSTEM_STATE(SYS_NEW_UPDATE_REQ);
+				//RTE_WRITE_SYSTEM_STATE(SYS_NEW_UPDATE_REQ);
+				//testing without user interface
+				RTE_WRITE_SYSTEM_STATE(SYS_REC_UPDATE);
 				/* Disble the interrupt till receive the code by synch function */
 				__HAL_UART_DISABLE_IT(&huart1, UART_IT_RXNE);
 			}

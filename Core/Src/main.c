@@ -107,20 +107,21 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
   HAL_CAN_Start(&hcan);
-
+  ReceiveUpdate_voidInit();
   Transmit_InitializeModule();
   Decrypt_Address_Read_Init();
 
-  RTE_WRITE_SYSTEM_STATE(SYS_DECRYPT);
-  RTE_WRITE_HEADER_ACK_FLAG(HEADER_SET);
-  RTE_WRITE_NODE_ID(1);
-  RTE_WRITE_CODE_SIZE(0x2520);
+//  RTE_WRITE_SYSTEM_STATE(SYS_DECRYPT);
+//  RTE_WRITE_HEADER_ACK_FLAG(HEADER_SET);
+//  RTE_WRITE_NODE_ID(1);
+//  RTE_WRITE_CODE_SIZE(0x2520);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+
 		RTE_READ_SYSTEM_STATE(&state);
 		if (state == SYS_REC_UPDATE){
 			ReceiveUpdate_MainFunction();
