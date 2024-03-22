@@ -27,8 +27,8 @@ typedef    uint8_t    UserInterfaceStateType ;
 /********** Cursor state  ***********/
 typedef    uint8_t    UiCursorStateType ;
 /**** Values *****/
-#define    UI_CURSOR_AT_ACCEPT   0x01u
-#define    UI_CURSOR_AT_REJECT   0x02u
+#define    UI_CURSOR_AT_ACCEPT   0x00u
+#define    UI_CURSOR_AT_REJECT   0x01u
 
 #define    RELEASED		0x00u
 #define    PRESSED		0x01u
@@ -75,8 +75,9 @@ static void Interface_GetResponseScreen (void);
 static void Interface_DownloadingScreen (void);
 static void Interface_UpdateDownloadingScreen (uint8_t Cpy_Progress);
 static void Interface_DoneScreen (void);
+static void Interface_InstallScreen (void);
 
-static void Interface_ProcessSwipeButton (void);
-static void Interface_ProcessOkButton (void);
+static void Interface_ProcessButton (void);
+
 
 #endif

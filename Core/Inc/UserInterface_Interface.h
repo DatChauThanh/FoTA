@@ -16,7 +16,7 @@
  * Sync
  * Description: Initialize ReceiveUpdate SWC. 
  ***************************************************************************/
-void UserInterface_voidInit(void);
+void UserInterface_InitializeModule(void);
 
 void UserInterface_MainFunction(void);
 

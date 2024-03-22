@@ -18,23 +18,20 @@
 static UserInterfaceStateType Global_UiInternalState ;
 static SystemStateType Global_SystemState ;
 static UiCursorStateType Global_CursorState ;
-static uint8_t Global_SwipeButtonState ;
-static uint8_t Global_OkButtonState ;
 static uint8_t Global_DownloadProgress ;
 
 /**************************************************************************/
 /*                         Module Functions                               */
 /**************************************************************************/
 
-void UserInterface_voidInit(void)
+void UserInterface_InitializeModule(void)
 {
 	/* Init Variables */
 	Global_UiInternalState = UI_IDLE ;
 	Global_CursorState = UI_CURSOR_AT_ACCEPT ;
-	Global_SwipeButtonState = RELEASED ;
-	Global_OkButtonState = RELEASED ;
 	Global_DownloadProgress = 0 ;
 	/* Init Screan */
+	SSD1306_Init(); // initialize the display
 	Interface_IdleScreen();
 }
 
@@ -73,22 +70,7 @@ void UserInterface_MainFunction (void)
 		/*****************************UI_GET_RESPONSE ***********************************/
 		case UI_GET_RESPONSE :
 		{
-			Std_ReturnType Local_ErrorSwipeButton = E_OK ;
-			Std_ReturnType Local_ErrorOkButton = E_OK ;
-//			Local_ErrorSwipeButton = Button_GetState(BUTTON_SWIPE_ID , &Global_SwipeButtonState);
-//			Local_ErrorOkButton = Button_GetState(BUTTON_OK_ID , &Global_OkButtonState);
-			Global_SwipeButtonState = RELEASED;	//
-			Global_OkButtonState = PRESSED;		// for testing due to UI has not ready yet
-			if ((E_OK == Local_ErrorSwipeButton) && (E_OK == Local_ErrorOkButton))
-			{
-				Interface_ProcessSwipeButton();
-				Interface_ProcessOkButton();
-			}
-			else
-			{
-				/* Report Error */
-			}
-			
+			Interface_ProcessButton();
 			break;
 		}
 		
@@ -111,7 +93,7 @@ void UserInterface_MainFunction (void)
 		}
 		
 		/*****************************UI_REJECT_UPDATE***********************************/
-		case UI_REJECT_UPDATE : 
+		case UI_REJECT_UPDATE :
 		{
 			/* Clear Screan */
 			Interface_CleanScrean();
@@ -124,10 +106,7 @@ void UserInterface_MainFunction (void)
 			/* Reinit vaiables */
 			Global_UiInternalState = UI_IDLE ;
 			Global_CursorState = UI_CURSOR_AT_ACCEPT ;
-			Global_SwipeButtonState = RELEASED ;
-			Global_OkButtonState = RELEASED ;
 			Interface_IdleScreen();
-			
 			break;
 		}
 		
@@ -144,11 +123,7 @@ void UserInterface_MainFunction (void)
 				{
 					/* Clear Screan */
 					Interface_CleanScrean();
-					
-					/* Update Screan */
-					SSD1306_GotoXY (0, 30);
-					SSD1306_Puts ("Install", &Font_7x10, 1);
-
+					Interface_InstallScreen();
 					/* Update internal state */
 					Global_UiInternalState = UI_INSTALLING ;
 				}
@@ -205,8 +180,6 @@ void UserInterface_MainFunction (void)
 			/* Reinit vaiables */
 			Global_UiInternalState = UI_IDLE ;
 			Global_CursorState = UI_CURSOR_AT_ACCEPT ;
-			Global_SwipeButtonState = RELEASED ;
-			Global_OkButtonState = RELEASED ;
 			Global_DownloadProgress = 0 ;
 			
 			Interface_CleanScrean();
@@ -230,50 +203,42 @@ void UserInterface_MainFunction (void)
 static void Interface_IdleScreen (void)
 {
 	/* Set Backgroun color */
-	SSD1306_GotoXY (0, 30);
-	SSD1306_Puts ("Hello Dat", &Font_7x10, 1);
-	SSD1306_GotoXY (10, 30);
-	SSD1306_Puts ("Waiting", &Font_7x10, 1);
-
-	SSD1306_GotoXY (20, 30);
-	SSD1306_Puts ("Update", &Font_7x10, 1);
-
-	SSD1306_UpdateScreen(); //display
+	SSD1306_GotoXY (0,10); // goto 10, 10
+    SSD1306_Puts ("FOTA SYSTEM", &Font_11x18, 1); // print Hello
+    SSD1306_GotoXY (5, 30);
+    SSD1306_Puts ("Waiting Update!!", &Font_7x10, 1);
+    SSD1306_UpdateScreen(); // update screen
 }
 
 
 static void Interface_GetResponseScreen (void)
 {
-	/* Writeing Text */
-	SSD1306_GotoXY (0, 30);
-	SSD1306_Puts ("New", &Font_7x10, 1);
-	SSD1306_GotoXY (10, 30);
-	SSD1306_Puts ("Update", &Font_7x10, 1);
+	SSD1306_GotoXY (20, 0);
+    SSD1306_Puts ("New Update", &Font_7x10, 1);
+    SSD1306_GotoXY (20, 10);
+    SSD1306_Puts ("Available", &Font_7x10, 1);
+    SSD1306_GotoXY (30, 30);
+    SSD1306_Puts ("Accept", &Font_7x10, 1);
+    SSD1306_GotoXY (30, 40);
+    SSD1306_Puts ("Reject", &Font_7x10, 1);
 
-	SSD1306_GotoXY (20, 30);
-	SSD1306_Puts ("Accept", &Font_7x10, 1);
-	SSD1306_GotoXY (30, 30);
-	SSD1306_Puts ("Reject", &Font_7x10, 1);
+    SSD1306_GotoXY (20, 30);
+    SSD1306_Puts (">", &Font_7x10, 1);	//Cursor init point to Accept
 
-	SSD1306_GotoXY (20, 20);
-	SSD1306_Puts (">", &Font_7x10, 1);	//Cursor init point to Accept
-
-	SSD1306_UpdateScreen(); //display
-
+    SSD1306_UpdateScreen(); //display
 }
 
 static void Interface_DownloadingScreen (void)
 {
 	/* Writeing Text */
-	SSD1306_GotoXY (0, 30);
+	SSD1306_GotoXY (40, 10);
 	SSD1306_Puts ("Download", &Font_7x10, 1);
-	SSD1306_GotoXY (10, 30);
+	SSD1306_GotoXY (40, 20);
 	SSD1306_Puts ("  in", &Font_7x10, 1);
-	SSD1306_GotoXY (20, 30);
+	SSD1306_GotoXY (40, 30);
 	SSD1306_Puts ("Progress", &Font_7x10, 1);
-	SSD1306_GotoXY (30, 30);
+	SSD1306_GotoXY (50, 40);
 	SSD1306_Puts ("  0%", &Font_7x10, 1);
-
 	SSD1306_UpdateScreen(); //display
 }
 
@@ -282,85 +247,92 @@ static void Interface_UpdateDownloadingScreen (uint8_t Cpy_Progress)
 	/**/
 	char local_DateBuffer[4];
 	/* Clear Current Progress Text */
-	SSD1306_GotoXY (30, 30);
-	SSD1306_Puts ("   ", &Font_7x10, 1);
-	sprintf(local_DateBuffer, "%.3i", Cpy_Progress);
-	SSD1306_GotoXY (30, 30);
+	sprintf(local_DateBuffer, "%d", Cpy_Progress);
+	SSD1306_GotoXY (50, 40);
+	SSD1306_Puts ("   %", &Font_7x10, 1);
+	SSD1306_GotoXY (50, 40);
 	SSD1306_Puts (local_DateBuffer, &Font_7x10, 1);
-	SSD1306_UpdateScreen();
-
+	SSD1306_UpdateScreen(); //display
 }
 
 static void Interface_DoneScreen (void)
 {
 	/* Writeing Text */
-	SSD1306_GotoXY (0, 30);
-	SSD1306_Puts ("Done", &Font_7x10, 1);
-	SSD1306_GotoXY (10, 30);
-	SSD1306_Puts ("Install", &Font_7x10, 1);
-	SSD1306_UpdateScreen();
+	SSD1306_GotoXY (40, 10);
+	SSD1306_Puts ("Download", &Font_7x10, 1);
+	SSD1306_GotoXY (35, 20);
+	SSD1306_Puts ("Completed", &Font_7x10, 1);
+	SSD1306_GotoXY (50, 30);
+	SSD1306_Puts (" -_-  ", &Font_7x10, 1);
+	SSD1306_UpdateScreen(); //display
+}
+
+static void Interface_InstallScreen(void)
+{
+	/* Update Screan */
+	SSD1306_GotoXY (40, 10);
+	SSD1306_Puts ("Installing", &Font_7x10, 1);
+	SSD1306_GotoXY (40, 20);
+	SSD1306_Puts (" Firmware", &Font_7x10, 1);
+	SSD1306_GotoXY (40, 30);
+	SSD1306_Puts (" to MCU ", &Font_7x10, 1);
+	SSD1306_UpdateScreen(); //display
 }
 
 static void Interface_CleanScrean(void)
 {
-	SSD1306_DrawFilledRectangle(0 , 0 , SSD1306_WIDTH-1 , SSD1306_HEIGHT-1 , SSD1306_COLOR_BLACK);
+	SSD1306_Clear();
 	SSD1306_UpdateScreen();
 }
 
-static void Interface_ProcessSwipeButton (void)
+static void Interface_ProcessButton (void)
 {
-	if (PRESSED == Global_SwipeButtonState)
+	while(1)
 	{
-		switch (Global_CursorState)
-		{
-			case UI_CURSOR_AT_ACCEPT : 
-				/* Delete cursor from the current option */
-				SSD1306_GotoXY (20, 20);
-				SSD1306_Puts (" ", &Font_7x10, 1);	//
-				/* Put the cursor at the next option */
-				SSD1306_GotoXY (30, 20);
-				SSD1306_Puts (">", &Font_7x10, 1);	//Cursor point to Reject
-				/* Update cursor state and screen */
-				SSD1306_UpdateScreen();
-				Global_CursorState = UI_CURSOR_AT_REJECT ;
-				break ;
-			
-			case UI_CURSOR_AT_REJECT :
-				/* Delete cursor from the current option */
-				SSD1306_GotoXY (20, 20);
-				SSD1306_Puts (">", &Font_7x10, 1);	//
-				/* Put the cursor at the next option */
-				SSD1306_GotoXY (30, 20);
-				SSD1306_Puts (" ", &Font_7x10, 1);	//Cursor point to Reject
-				/* Update cursor state and screen */
-				SSD1306_UpdateScreen();
-				Global_CursorState = UI_CURSOR_AT_ACCEPT ;
-				break ;
-		}
-	}
-	else 
-	{
-		/*Do Nothing */
-	}
-}
-
-static void Interface_ProcessOkButton (void)
-{
-	if (PRESSED == Global_OkButtonState)
-	{
-		switch (Global_CursorState)
-		{
-			case UI_CURSOR_AT_ACCEPT : 
+	  if(HAL_GPIO_ReadPin(SWITCH_BTN_GPIO_Port, SWITCH_BTN_Pin) ==  GPIO_PIN_RESET)
+	  {
+		  while(HAL_GPIO_ReadPin(SWITCH_BTN_GPIO_Port, SWITCH_BTN_Pin) ==  GPIO_PIN_RESET);// Hold until button release
+		  if(Global_CursorState == UI_CURSOR_AT_ACCEPT)
+		  {
+			  SSD1306_GotoXY (20, 30);
+			  SSD1306_Puts (" ", &Font_7x10, 1);	//Cursor init point to Accept
+			  SSD1306_GotoXY (20, 40);
+			  SSD1306_Puts (">", &Font_7x10, 1);	//Cursor init point to Accept
+			  Global_CursorState = UI_CURSOR_AT_REJECT;
+		  }
+		  else if(Global_CursorState == UI_CURSOR_AT_REJECT)
+		  {
+			  SSD1306_GotoXY (20, 30);
+			  SSD1306_Puts (">", &Font_7x10, 1);	//Cursor init point to Accept
+			  SSD1306_GotoXY (20, 40);
+			  SSD1306_Puts (" ", &Font_7x10, 1);	//Cursor init point to Accept
+			  Global_CursorState = UI_CURSOR_AT_ACCEPT;
+		  }
+		  else
+		  {
+			  //error
+		  }
+	  }
+	  SSD1306_UpdateScreen(); //display
+	  HAL_Delay(100);
+	  if(HAL_GPIO_ReadPin(OK_BNT_GPIO_Port, OK_BNT_Pin) ==  GPIO_PIN_RESET)
+	  {
+		 while(HAL_GPIO_ReadPin(OK_BNT_GPIO_Port, OK_BNT_Pin) ==  GPIO_PIN_RESET);// Hold until button release
+		 switch (Global_CursorState)
+		 {
+			case UI_CURSOR_AT_ACCEPT :
 				/* Update System State */
 				Global_UiInternalState = UI_ACCEPT_UPDATE ;
 				break ;
-			
+
 			case UI_CURSOR_AT_REJECT :
 				Global_UiInternalState = UI_REJECT_UPDATE ;
 				break ;
-		}
+		 }
+	  }
 	}
 }
+
 
 
 

@@ -9,14 +9,14 @@
 #define INC_RECEIVEUPDATE_INTERFACE_H_
 #include "main.h"
 /*************************************************************************
- * Name : ReceiveUpdate_voidInit
+ * Name : ReceiveUpdate_InitializeModule
  * Parameter in : -
  * Parameter out : -
  * Parameter in/out : -
  * Sync
- * Description: Initialize ReceiveUpdate SWC.
+ * Description: Initialize ReceiveUpdate_InitializeModule.
  ***************************************************************************/
-void ReceiveUpdate_voidInit(void);
+void ReceiveUpdate_InitializeModule(void);
 
 /*************************************************************************
  * Name : ReceiveUpdate_MainFunction

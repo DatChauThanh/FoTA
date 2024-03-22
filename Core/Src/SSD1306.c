@@ -125,6 +125,11 @@ void SSD1306_UpdateScreen(void) {
 	}
 }
 
+void SSD1306_Fill(SSD1306_COLOR_t color) {
+	/* Set memory */
+	memset(SSD1306_Buffer, (color == SSD1306_COLOR_BLACK) ? 0x00 : 0xFF, sizeof(SSD1306_Buffer));
+}
+
 void SSD1306_DrawPixel(uint16_t x, uint16_t y, SSD1306_COLOR_t color) {
 	if (
 		x >= SSD1306_WIDTH ||
@@ -339,6 +344,17 @@ void SSD1306_OFF(void) {
 // |_____|____|\_____|
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
+void ssd1306_I2C_Init() {
+	//MX_I2C1_Init();
+	uint32_t p = 250000;
+	while(p>0)
+		p--;
+	//HAL_I2C_DeInit(&hi2c1);
+	//p = 250000;
+	//while(p>0)
+	//	p--;
+	//MX_I2C1_Init();
+}
 
 void ssd1306_I2C_WriteMulti(uint8_t address, uint8_t reg, uint8_t* data, uint16_t count) {
 uint8_t dt[256];

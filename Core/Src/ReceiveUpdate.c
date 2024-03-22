@@ -30,7 +30,7 @@ static uint32_t Global_ReceivedBytes;
 /*                         Module Functions                               */
 /**************************************************************************/
 
-void ReceiveUpdate_voidInit(void)
+void ReceiveUpdate_InitializeModule(void)
 {
 	/* Init Variables */
 	Global_CrcValue 				= INITIAL_VALUE ;
@@ -231,8 +231,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *UartHandle)
 {
 	Std_ReturnType Local_Error ;
 	//Testing
-	RTE_WRITE_USER_RESPONSE(ACCEPT_UPDATE);
-
+//	RTE_WRITE_USER_RESPONSE(ACCEPT_UPDATE);
 	/* Check of the ESP request */
 	if (NEW_UPDATE_REQUEST == Global_HeaderBuffer[0])
 	{
@@ -244,9 +243,9 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *UartHandle)
 			if (SYS_IDLE == Global_SystemState)
 			{
 				/* Accept the request and change system state */
-				//RTE_WRITE_SYSTEM_STATE(SYS_NEW_UPDATE_REQ);
+				RTE_WRITE_SYSTEM_STATE(SYS_NEW_UPDATE_REQ);
 				//testing without user interface
-				RTE_WRITE_SYSTEM_STATE(SYS_REC_UPDATE);
+				//RTE_WRITE_SYSTEM_STATE(SYS_REC_UPDATE);
 				/* Disble the interrupt till receive the code by synch function */
 				__HAL_UART_DISABLE_IT(&huart1, UART_IT_RXNE);
 			}

@@ -105,12 +105,12 @@ int main(void)
   MX_I2C1_Init();
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
-
   HAL_CAN_Start(&hcan);
-  ReceiveUpdate_voidInit();
+
+  ReceiveUpdate_InitializeModule();
   Transmit_InitializeModule();
   Decrypt_Address_Read_Init();
-
+  UserInterface_InitializeModule();
 //  RTE_WRITE_SYSTEM_STATE(SYS_DECRYPT);
 //  RTE_WRITE_HEADER_ACK_FLAG(HEADER_SET);
 //  RTE_WRITE_NODE_ID(1);
@@ -138,7 +138,7 @@ int main(void)
 		{
 			//do nothing
 		}
-//			UserInterface_MainFunction();
+		UserInterface_MainFunction();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -327,6 +327,12 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(LED_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : SWITCH_BTN_Pin OK_BNT_Pin */
+  GPIO_InitStruct.Pin = SWITCH_BTN_Pin|OK_BNT_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
 /* USER CODE BEGIN MX_GPIO_Init_2 */
 /* USER CODE END MX_GPIO_Init_2 */
