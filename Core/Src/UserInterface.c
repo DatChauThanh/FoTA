@@ -122,6 +122,7 @@ void UserInterface_MainFunction (void)
 				if (100 == Global_DownloadProgress)
 				{
 					/* Clear Screan */
+					HAL_Delay(2000); // hold for 2 seconds
 					Interface_CleanScrean();
 					Interface_InstallScreen();
 					/* Update internal state */
@@ -318,16 +319,15 @@ static void Interface_ProcessButton (void)
 	  if(HAL_GPIO_ReadPin(OK_BNT_GPIO_Port, OK_BNT_Pin) ==  GPIO_PIN_RESET)
 	  {
 		 while(HAL_GPIO_ReadPin(OK_BNT_GPIO_Port, OK_BNT_Pin) ==  GPIO_PIN_RESET);// Hold until button release
-		 switch (Global_CursorState)
+		 if(Global_CursorState == UI_CURSOR_AT_ACCEPT)
 		 {
-			case UI_CURSOR_AT_ACCEPT :
-				/* Update System State */
-				Global_UiInternalState = UI_ACCEPT_UPDATE ;
-				break ;
-
-			case UI_CURSOR_AT_REJECT :
-				Global_UiInternalState = UI_REJECT_UPDATE ;
-				break ;
+			Global_UiInternalState = UI_ACCEPT_UPDATE ;
+			break ;
+		 }
+		 else if (Global_CursorState == UI_CURSOR_AT_REJECT)
+		 {
+			Global_UiInternalState = UI_REJECT_UPDATE ;
+			break ;
 		 }
 	  }
 	}

@@ -1,6 +1,6 @@
 ../Core/Src/UserInterface.c:27:6:UserInterface_InitializeModule	8	static
 ../Core/Src/UserInterface.c:39:6:UserInterface_MainFunction	16	static
-../Core/Src/UserInterface.c:203:13:Interface_IdleScreen	8	static
+../Core/Src/UserInterface.c:204:13:Interface_IdleScreen	8	static
 ../Core/Src/UserInterface.c:215:13:Interface_GetResponseScreen	8	static
 ../Core/Src/UserInterface.c:232:13:Interface_DownloadingScreen	8	static
 ../Core/Src/UserInterface.c:246:13:Interface_UpdateDownloadingScreen	24	static

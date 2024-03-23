@@ -55,6 +55,7 @@ void ReceiveUpdate_MainFunction (void)
 	{
 		case RX_IDLE:
 		{
+
 			uint8_t Local_Error = RTE_READ_USER_RESPONSE(&Global_RxUserResponse);
 			if(Local_Error == E_OK)
 			{
@@ -82,8 +83,10 @@ void ReceiveUpdate_MainFunction (void)
 			/* Inform ESP to accept request */
 			Global_HeaderReqByte = REQUEST_ACCEPTED;
 			HAL_UART_Transmit(&huart1, &Global_HeaderReqByte, 1, HAL_MAX_DELAY);
+			/*Erase Image to flash new firmware from Telematic unit*/
+			FR_Erase_Image(IMAGE_NEW_FIRMWARE);
 			/* Change Internal State */
-			Global_RxInternalSate = RX_RECEIVE_HEADER ;
+			Global_RxInternalSate = RX_RECEIVE_PACKET ;
 			break;
 		}
 		/*****************************RX_REFUSE_UPDATE***********************************/
@@ -128,10 +131,10 @@ void ReceiveUpdate_MainFunction (void)
 			/* Ack Header */
 			Global_HeaderReqByte = HEADER_RECEIVED;
 			HAL_UART_Transmit(&huart1, &Global_HeaderReqByte, 1, HAL_MAX_DELAY);
-			/*Erase Image to flash new firmware from Telematic unit*/
-			FR_Erase_Image(IMAGE_NEW_FIRMWARE);
+
 			/* Change State */
-			Global_RxInternalSate = RX_RECEIVE_PACKET ;
+			RTE_WRITE_SYSTEM_STATE(SYS_NEW_UPDATE_REQ);
+			Global_RxInternalSate = RX_IDLE ;
 
 			break;
 		}
@@ -243,7 +246,8 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *UartHandle)
 			if (SYS_IDLE == Global_SystemState)
 			{
 				/* Accept the request and change system state */
-				RTE_WRITE_SYSTEM_STATE(SYS_NEW_UPDATE_REQ);
+				RTE_WRITE_SYSTEM_STATE(SYS_REC_UPDATE);
+				Global_RxInternalSate = RX_RECEIVE_HEADER;
 				//testing without user interface
 				//RTE_WRITE_SYSTEM_STATE(SYS_REC_UPDATE);
 				/* Disble the interrupt till receive the code by synch function */

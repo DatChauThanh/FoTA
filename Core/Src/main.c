@@ -80,7 +80,7 @@ static void MX_USART1_UART_Init(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-  uint8_t state ;
+  uint8_t state = SYS_IDLE;
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
