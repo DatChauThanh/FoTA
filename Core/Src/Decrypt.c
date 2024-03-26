@@ -65,21 +65,7 @@ void Decrypt_MainFunction (void)
               
 						if( E_OK == status )
                         {						                	
-//			    		   	if(Global_KeyFlag)
-//			     		    {
-//
-//					        	Global_KeyFlag = ZERO ;
-//				                 /*Init AES module decrypt input buffer */
-//   	                            AES_uint8KeyExpansion ( key , roundkeys);
-//
-//				   		    }
-//                                status = AES_uint8Decrypt_Buffer (roundkeys , Global_CipherDataPtr , Global_PlainDataPtr , BUFFER_LENGTH);
-//
-//							    if( E_OK == status )
-//                                {
-//			                        /*Write decrypted buffer to decrypt port "Data send point "*/
-//                                    status = RTE_WRITE_DECRYPTED_DATA_BUFFER (Global_PlainDataPtr) ;
-//								}
+
 							status = RTE_WRITE_DECRYPTED_DATA_BUFFER (Global_PlainDataPtr) ;
 							 /*Change buffer flag value to set "Data send point "*/
 							RTE_WRITE_DECRYPTED_DATA_BUFFER_FLAG(BUFFER_SET);

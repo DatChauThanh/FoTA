@@ -50,7 +50,7 @@ I2C_HandleTypeDef hi2c1;
 UART_HandleTypeDef huart1;
 
 /* USER CODE BEGIN PV */
-CAN_FilterTypeDef canfilterconfig;
+CAN_FilterTypeDef hcanfilter1;
 CAN_TxHeaderTypeDef TxHeader;
 CAN_RxHeaderTypeDef RxHeader;
 uint8_t TxData[8];
@@ -103,18 +103,22 @@ int main(void)
   MX_GPIO_Init();
   MX_CAN_Init();
   MX_I2C1_Init();
-  MX_USART1_UART_Init();
+  //MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
   HAL_CAN_Start(&hcan);
 
-  ReceiveUpdate_InitializeModule();
+  //ReceiveUpdate_InitializeModule();
   Transmit_InitializeModule();
   Decrypt_Address_Read_Init();
   UserInterface_InitializeModule();
-//  RTE_WRITE_SYSTEM_STATE(SYS_DECRYPT);
-//  RTE_WRITE_HEADER_ACK_FLAG(HEADER_SET);
-//  RTE_WRITE_NODE_ID(1);
-//  RTE_WRITE_CODE_SIZE(0x2520);
+
+// Testing between GW and MCU
+  RTE_WRITE_SYSTEM_STATE(SYS_DECRYPT);
+  RTE_WRITE_HEADER_ACK_FLAG(HEADER_SET);
+  RTE_WRITE_NODE_ID(1);
+  RTE_WRITE_CODE_SIZE(0x10);
+
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -124,7 +128,7 @@ int main(void)
 
 		RTE_READ_SYSTEM_STATE(&state);
 		if (state == SYS_REC_UPDATE){
-			ReceiveUpdate_MainFunction();
+		//	ReceiveUpdate_MainFunction();
 		}
 		else if (state == SYS_DECRYPT)
 		{
@@ -218,18 +222,18 @@ static void MX_CAN_Init(void)
   }
   /* USER CODE BEGIN CAN_Init 2 */
   //Initialize Variable for CAN
-  	canfilterconfig.FilterActivation = CAN_FILTER_ENABLE;
-	canfilterconfig.FilterBank = 0;  // which filter bank to use from the assigned ones
-	canfilterconfig.FilterFIFOAssignment = CAN_FILTER_FIFO0;
-	canfilterconfig.FilterIdHigh = 0x000;
-	canfilterconfig.FilterIdLow = 0;
-	canfilterconfig.FilterMaskIdHigh = 0;
-	canfilterconfig.FilterMaskIdLow = 0;
-	canfilterconfig.FilterMode = CAN_FILTERMODE_IDMASK;
-	canfilterconfig.FilterScale = CAN_FILTERSCALE_32BIT;
-	canfilterconfig.SlaveStartFilterBank = 10;  // how many filters to assign to the CAN1 (master can)
+  hcanfilter1.FilterActivation = CAN_FILTER_ENABLE;
+  hcanfilter1.FilterBank = 0;  // which filter bank to use from the assigned ones
+  hcanfilter1.FilterFIFOAssignment = CAN_FILTER_FIFO0;
+  hcanfilter1.FilterIdHigh = 0x10<<5;	//The STD ID starts from 5th bit in the ID HIGH Register
+  hcanfilter1.FilterIdLow = 0;
+  hcanfilter1.FilterMaskIdHigh = 0x10<<5;
+  hcanfilter1.FilterMaskIdLow = 0;
+  hcanfilter1.FilterMode = CAN_FILTERMODE_IDMASK;
+  hcanfilter1.FilterScale = CAN_FILTERSCALE_32BIT;
+  hcanfilter1.SlaveStartFilterBank = 10;  // how many filters to assign to the CAN1 (master can)
 
-	HAL_CAN_ConfigFilter(&hcan, &canfilterconfig);
+  HAL_CAN_ConfigFilter(&hcan, &hcanfilter1);
   /* USER CODE END CAN_Init 2 */
 
 }

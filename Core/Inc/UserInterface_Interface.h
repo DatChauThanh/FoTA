@@ -6,7 +6,7 @@
 #ifndef USER_INTERFACE_INTERFACE_H
 #define USER_INTERFACE_INTERFACE_H
 
-
+#define Bandwidth_Avarage 1000
 /*************************************************************************
  * Name : ReceiveUpdate_voidInit
  * Parameter in : -

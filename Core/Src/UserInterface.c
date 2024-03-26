@@ -214,19 +214,57 @@ static void Interface_IdleScreen (void)
 
 static void Interface_GetResponseScreen (void)
 {
+	uint8_t 	Local_NodeID                 = 0;
+	uint32_t 	Local_Codesize               = 0;
+	RTE_READ_NODE_ID(&Local_NodeID);
+	RTE_READ_CODE_SIZE(&Local_Codesize);
+	char Local_DateBuffer[4];
+	uint8_t Local_Estimate_time = Local_Codesize / Bandwidth_Avarage + 30;
+
 	SSD1306_GotoXY (20, 0);
-    SSD1306_Puts ("New Update", &Font_7x10, 1);
-    SSD1306_GotoXY (20, 10);
-    SSD1306_Puts ("Available", &Font_7x10, 1);
-    SSD1306_GotoXY (30, 30);
-    SSD1306_Puts ("Accept", &Font_7x10, 1);
-    SSD1306_GotoXY (30, 40);
-    SSD1306_Puts ("Reject", &Font_7x10, 1);
+	SSD1306_Puts ("New firmware", &Font_7x10, 1);
+	SSD1306_GotoXY (20, 10);
+	SSD1306_Puts ("available for", &Font_7x10, 1);
+	switch(Local_NodeID)
+	{
+	  case 1:
+	  {
+		  SSD1306_GotoXY (20, 20);
+		  SSD1306_Puts ("Lighting MCU", &Font_7x10, 1);
+		  break;
+	  }
+	  case 2:
+	  {
+		  SSD1306_GotoXY (20, 20);
+		  SSD1306_Puts ("Collision MCU", &Font_7x10, 1);
+		  break;
+	  }
+	  default:
+	  {
+		SSD1306_GotoXY (20, 20);
+		SSD1306_Puts ("Unknown MCU", &Font_7x10, 1);
+		break;
+	  }
+	}
 
-    SSD1306_GotoXY (20, 30);
-    SSD1306_Puts (">", &Font_7x10, 1);	//Cursor init point to Accept
 
-    SSD1306_UpdateScreen(); //display
+	sprintf(Local_DateBuffer, "%d", Local_Estimate_time);
+	SSD1306_GotoXY (20, 30);
+	SSD1306_Puts ("Estimate: <", &Font_7x10, 1);
+	SSD1306_GotoXY (95, 30);
+	SSD1306_Puts (Local_DateBuffer, &Font_7x10, 1);
+	SSD1306_GotoXY (110, 30);
+	SSD1306_Puts ("s", &Font_7x10, 1);
+
+	SSD1306_GotoXY (30, 40);
+	SSD1306_Puts ("Accept", &Font_7x10, 1);
+	SSD1306_GotoXY (30, 50);
+	SSD1306_Puts ("Reject", &Font_7x10, 1);
+
+	SSD1306_GotoXY (20, 40);
+	SSD1306_Puts (">", &Font_7x10, 1);	//Cursor init point to Accept
+
+	SSD1306_UpdateScreen(); //display
 }
 
 static void Interface_DownloadingScreen (void)
