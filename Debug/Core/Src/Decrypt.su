@@ -1,0 +1,2 @@
+../Core/Src/Decrypt.c:31:7:Decrypt_Address_Read_Init	4	static
+../Core/Src/Decrypt.c:36:6:Decrypt_MainFunction	16	static

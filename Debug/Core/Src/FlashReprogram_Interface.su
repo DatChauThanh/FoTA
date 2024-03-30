@@ -1,0 +1,5 @@
+../Core/Src/FlashReprogram_Interface.c:14:6:FR_voidInitVariables	4	static
+../Core/Src/FlashReprogram_Interface.c:20:19:FR_FlashBlockToAddress	24	static
+../Core/Src/FlashReprogram_Interface.c:42:19:FR_Erase_Image	40	static
+../Core/Src/FlashReprogram_Interface.c:61:19:FR_FlashHalfWordToAddress	32	static
+../Core/Src/FlashReprogram_Interface.c:72:19:FR_FlashWordToAddress	32	static
