@@ -83,7 +83,7 @@ void UserInterface_MainFunction (void)
 			Interface_DownloadingScreen();
 			
 			/* Update user response */
-			RTE_WRITE_USER_RESPONSE (ACCEPT_UPDATE);
+			RTE_WRITE_USER_RESPONSE(ACCEPT_UPDATE);
 			/* Update system state */
 			RTE_WRITE_SYSTEM_STATE(SYS_REC_UPDATE);
 			
@@ -101,7 +101,7 @@ void UserInterface_MainFunction (void)
 			/* Update user response */
 			RTE_WRITE_USER_RESPONSE (REFUSE_UPDATE);
 			/* Update system state */
-			RTE_WRITE_SYSTEM_STATE(SYS_REC_UPDATE);
+			RTE_WRITE_SYSTEM_STATE(SYS_IDLE);
 			
 			/* Reinit vaiables */
 			Global_UiInternalState = UI_IDLE ;
@@ -219,7 +219,7 @@ static void Interface_GetResponseScreen (void)
 	RTE_READ_NODE_ID(&Local_NodeID);
 	RTE_READ_CODE_SIZE(&Local_Codesize);
 	char Local_DateBuffer[4];
-	uint8_t Local_Estimate_time = Local_Codesize / Bandwidth_Avarage + 30;
+	uint8_t Local_Estimate_time = Local_Codesize / Bandwidth_Avarage + 20;
 
 	SSD1306_GotoXY (20, 0);
 	SSD1306_Puts ("New firmware", &Font_7x10, 1);
@@ -230,13 +230,13 @@ static void Interface_GetResponseScreen (void)
 	  case 1:
 	  {
 		  SSD1306_GotoXY (20, 20);
-		  SSD1306_Puts ("Lighting MCU", &Font_7x10, 1);
+		  SSD1306_Puts ("Collision MCU", &Font_7x10, 1);
 		  break;
 	  }
 	  case 2:
 	  {
 		  SSD1306_GotoXY (20, 20);
-		  SSD1306_Puts ("Collision MCU", &Font_7x10, 1);
+		  SSD1306_Puts ("Lighting MCU", &Font_7x10, 1);
 		  break;
 	  }
 	  default:
@@ -333,17 +333,17 @@ static void Interface_ProcessButton (void)
 		  while(HAL_GPIO_ReadPin(SWITCH_BTN_GPIO_Port, SWITCH_BTN_Pin) ==  GPIO_PIN_RESET);// Hold until button release
 		  if(Global_CursorState == UI_CURSOR_AT_ACCEPT)
 		  {
-			  SSD1306_GotoXY (20, 30);
-			  SSD1306_Puts (" ", &Font_7x10, 1);	//Cursor init point to Accept
 			  SSD1306_GotoXY (20, 40);
+			  SSD1306_Puts (" ", &Font_7x10, 1);	//Cursor init point to Accept
+			  SSD1306_GotoXY (20, 50);
 			  SSD1306_Puts (">", &Font_7x10, 1);	//Cursor init point to Accept
 			  Global_CursorState = UI_CURSOR_AT_REJECT;
 		  }
 		  else if(Global_CursorState == UI_CURSOR_AT_REJECT)
 		  {
-			  SSD1306_GotoXY (20, 30);
-			  SSD1306_Puts (">", &Font_7x10, 1);	//Cursor init point to Accept
 			  SSD1306_GotoXY (20, 40);
+			  SSD1306_Puts (">", &Font_7x10, 1);	//Cursor init point to Accept
+			  SSD1306_GotoXY (20, 50);
 			  SSD1306_Puts (" ", &Font_7x10, 1);	//Cursor init point to Accept
 			  Global_CursorState = UI_CURSOR_AT_ACCEPT;
 		  }

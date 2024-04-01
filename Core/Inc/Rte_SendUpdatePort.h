@@ -13,7 +13,7 @@
 /**************************************************************************/
 #define    RTE_WRITE_SYSTEM_STATE               	Rte_WriteSystemState
 #define    RTE_WRITE_HEADER_ACK_FLAG            	Rte_WriteHeaderAckFlag
-#define    RTE_WRITE_DECRYPTED_DATA_BUFFER_FLAG 	Rte_WriteDecryptedDataBufferFlag
+#define    RTE_WRITE_ENCRYPTED_DATA_BUFFER_FLAG 	Rte_WriteEncryptedDataBufferFlag
 
 /**************************************************************************/
 /*                         Requested Ports                                */
@@ -23,8 +23,8 @@
 #define    RTE_READ_CRC_VALUE                   	Rte_ReadCrc
  
 #define    RTE_READ_HEADER_ACK_FLAG             	Rte_ReadHeaderAckFlag
-#define    RTE_READ_DECRYPTED_DATA_BUFFER_FLAG  	Rte_ReadDecryptedDataBufferFlag
-#define    RTE_READ_DECRYPTED_DATA_BUFFER       	Rte_ReadDecryptedDataBuffer
+#define    RTE_READ_ENCRYPTED_DATA_BUFFER_FLAG  	Rte_ReadEncryptedDataBufferFlag
+#define    RTE_READ_ENCRYPTED_DATA_BUFFER       	Rte_ReadEncryptedDataBuffer
 
 
 #endif

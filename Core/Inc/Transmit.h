@@ -63,6 +63,8 @@
 #define UDS_MCU_ACKNOWLEDGE_ACTIVE_CODE_NOT_CORRECT 0x79
 #define UDS_MCU_ACKNOWLEDGE_BACKUP_CODE_CORRECT     0x7A
 #define UDS_MCU_ACKNOWLEDGE_BACKUP_CODE_NOT_CORRECT 0x7B
+
+#define STORE_AREA_START_ADDRESS 0x0800A800
 /******************************************************************************
 * Macros
 *******************************************************************************/

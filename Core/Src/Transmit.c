@@ -138,7 +138,6 @@ static Std_ReturnType Transmit_GetTransmitHeader(void *Cpy_voidPtr)
    // Handle header information
    Transmit_HandleHeader(Local_uint32CodeSize, Local_uint32CrcValue, Local_HeaderBuffer);
    /************************Sequence Between Gateway and Boot_loader********************/
-
    // Request Program control.
    CAN_IF_Transmit_UDS_Request(Local_uint8NodeId, UDS_CONTROL_SESSION);
    // Wait Ack from BL
@@ -194,12 +193,12 @@ static Std_ReturnType Transmit_ConsumeTransmitData(void *Cpy_voidPtr)
    Static_uint16NumberOfPackets            = (Static_uint32CodeSize) / (DATA_BUFFER_SIZE);
    Static_uint8NumOfBytesInLastPacket      = (Static_uint32CodeSize) % (DATA_BUFFER_SIZE);
    // Get Buffer Flag Value.
-   RTE_READ_DECRYPTED_DATA_BUFFER_FLAG(&Local_uint8BufferFlagValue);
+   RTE_READ_ENCRYPTED_DATA_BUFFER_FLAG(&Local_uint8BufferFlagValue);
    // Check The Buffer Flag Value
    if(BUFFER_SET == Local_uint8BufferFlagValue)
    {
       // Consume Data and Increase packet counter by 1
-      RTE_READ_DECRYPTED_DATA_BUFFER(&Local_uint8DataBuffer);
+      RTE_READ_ENCRYPTED_DATA_BUFFER(&Local_uint8DataBuffer);
       // Request Sending line of code code.
       CAN_IF_Transmit_UDS_Request(Static_uint8NodeId, UDS_GWY_REQUEST_SENDING_PACKET_OF_CODE);
       // Wait Ack from BL
@@ -210,8 +209,8 @@ static Std_ReturnType Transmit_ConsumeTransmitData(void *Cpy_voidPtr)
          // condition to know are we will send the last packet or ordinary packet.
          if(Static_uint16PacketsCounter < Static_uint16NumberOfPackets)
          {
-            // Sending 64 byte of DATA_BUFFER_SIZE
-        	CAN_IF_Trasmit_Data_Frame(Static_uint8NodeId, Local_uint8DataBuffer, DATA_BUFFER_SIZE);
+            // Sending 16 byte of DATA_BUFFER_SIZE
+        	CAN_IF_Trasmit_Data_Buffer(Static_uint8NodeId, Local_uint8DataBuffer, DATA_BUFFER_SIZE);
             // Wait Ack from BL
         	CAN_IF_Receive_UDS_Respond(&Local_uint8ReceivedAck);
             if(UDS_MCU_ACKNOWLEDGE_PACKET_OF_CODE_RECEIVED == Local_uint8ReceivedAck)
@@ -226,7 +225,7 @@ static Std_ReturnType Transmit_ConsumeTransmitData(void *Cpy_voidPtr)
 				else
 				{
 					// Reset Buffer flag
-					RTE_WRITE_DECRYPTED_DATA_BUFFER_FLAG(RESET_FLAG);
+					RTE_WRITE_ENCRYPTED_DATA_BUFFER_FLAG(RESET_FLAG);
 					// Change System State To De_crypt state.
 					RTE_WRITE_SYSTEM_STATE(SYS_DECRYPT);
 				}
@@ -243,7 +242,7 @@ static Std_ReturnType Transmit_ConsumeTransmitData(void *Cpy_voidPtr)
          else if (Static_uint8NumOfBytesInLastPacket != 0)
          {
             // Sending the rest of data
-        	CAN_IF_Trasmit_Data_Frame(Static_uint8NodeId, Local_uint8DataBuffer, Static_uint8NumOfBytesInLastPacket);
+        	CAN_IF_Trasmit_Data_Buffer(Static_uint8NodeId, Local_uint8DataBuffer, DATA_BUFFER_SIZE);
             // Wait Ack from BL
             CAN_IF_Receive_UDS_Respond(&Local_uint8ReceivedAck);
             if(UDS_MCU_ACKNOWLEDGE_PACKET_OF_CODE_RECEIVED == Local_uint8ReceivedAck)
@@ -277,7 +276,7 @@ static Std_ReturnType Transmit_FinishingState(void *Cpy_voidPtr)
 {
    uint8_t Local_uint8_tReceivedAck = INITIALIZE_WITH_ZERO;
    // Reset Buffer flag
-   RTE_WRITE_DECRYPTED_DATA_BUFFER_FLAG(RESET_FLAG);
+   RTE_WRITE_ENCRYPTED_DATA_BUFFER_FLAG(RESET_FLAG);
    // Ack node of the end of code transmission
    CAN_IF_Transmit_UDS_Request(Static_uint8NodeId, UDS_GWY_ACKNOWLEDGE_FINISHING_SENDING_CODE);
    // Wait Ack from BL
@@ -308,7 +307,8 @@ static Std_ReturnType Transmit_ConsumeHeader(uint8_t *Cpy_NodeId,uint32_t *Cpy_S
    // Consume Header Information.     
    Local_ReturnStatus                = RTE_READ_NODE_ID  (Cpy_NodeId);
    Local_ReturnStatus                = RTE_READ_CODE_SIZE(Cpy_Size);
-   Local_ReturnStatus                = RTE_READ_CRC_VALUE(Cpy_Crc);
+   uint32_t* pBuffer = STORE_AREA_START_ADDRESS;
+   *Cpy_Crc  = HAL_CRC_Calculate(&hcrc, pBuffer,*(Cpy_Size)/4);
    return Local_ReturnStatus;
 }
 

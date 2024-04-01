@@ -32,7 +32,7 @@ extern "C" {
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "Rte_SendUpdatePort.h"
-#include "Rte_DecryptPort.h"
+#include <Rte_EncryptPort.h>
 #include "Rte_ReceiveUpatePort.h"
 #include "Rte_UserInterfacePort.h"
 
@@ -40,6 +40,7 @@ extern "C" {
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
+extern CRC_HandleTypeDef hcrc;
 extern I2C_HandleTypeDef hi2c1;
 extern CAN_HandleTypeDef hcan;
 extern CAN_TxHeaderTypeDef TxHeader;
@@ -70,10 +71,10 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin);
 /* Private defines -----------------------------------------------------------*/
 #define LED_Pin GPIO_PIN_13
 #define LED_GPIO_Port GPIOC
-#define SWITCH_BTN_Pin GPIO_PIN_1
-#define SWITCH_BTN_GPIO_Port GPIOA
-#define OK_BNT_Pin GPIO_PIN_2
-#define OK_BNT_GPIO_Port GPIOA
+#define OK_BNT_Pin GPIO_PIN_3
+#define OK_BNT_GPIO_Port GPIOB
+#define SWITCH_BTN_Pin GPIO_PIN_4
+#define SWITCH_BTN_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
 

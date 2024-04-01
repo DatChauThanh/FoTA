@@ -2,3 +2,5 @@
 ../Core/Src/Can_Interface.c:28:19:CAN_IF_Trasmit_Data_Frame	4
 ../Core/Src/Can_Interface.c:52:19:CAN_IF_Receive_UDS_Respond	2
 ../Core/Src/Can_Interface.c:61:19:CAN_IF_Receive_Data_Frame	3
+../Core/Src/Can_Interface.c:73:19:CAN_IF_Trasmit_Data_Buffer	5
+../Core/Src/Can_Interface.c:105:19:CAN_IF_Receive_Data_Buffer	5

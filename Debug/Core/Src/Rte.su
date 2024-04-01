@@ -6,10 +6,10 @@
 ../Core/Src/Rte.c:150:16:Rte_ReadCrc	24	static
 ../Core/Src/Rte.c:173:16:Rte_WriteHeaderAckFlag	24	static
 ../Core/Src/Rte.c:193:16:Rte_ReadHeaderAckFlag	24	static
-../Core/Src/Rte.c:216:16:Rte_WriteDecryptedDataBuffer	24	static
-../Core/Src/Rte.c:236:16:Rte_ReadDecryptedDataBuffer	24	static
-../Core/Src/Rte.c:259:16:Rte_WriteDecryptedDataBufferFlag	24	static
-../Core/Src/Rte.c:279:16:Rte_ReadDecryptedDataBufferFlag	24	static
+../Core/Src/Rte.c:216:16:Rte_WriteEncryptedDataBuffer	24	static
+../Core/Src/Rte.c:236:16:Rte_ReadEncryptedDataBuffer	24	static
+../Core/Src/Rte.c:259:16:Rte_WriteEncryptedDataBufferFlag	24	static
+../Core/Src/Rte.c:279:16:Rte_ReadEncryptedDataBufferFlag	24	static
 ../Core/Src/Rte.c:302:16:Rte_WriteSystemState	24	static
 ../Core/Src/Rte.c:322:16:Rte_ReadSystemState	24	static
 ../Core/Src/Rte.c:345:16:Rte_WriteUserResponse	24	static

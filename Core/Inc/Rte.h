@@ -46,16 +46,16 @@ Std_ReturnType Rte_WriteHeaderAckFlag(FlagType Cpy_HeaderAckFlag);
 Std_ReturnType Rte_ReadHeaderAckFlag (FlagType *Cpy_HeaderAckFlag);
 
 /**************************************************************************/
-/*                         Decrypted Data Buffer Port                     */
+/*                         Encrypted Data Buffer Port                     */
 /**************************************************************************/
-Std_ReturnType Rte_WriteDecryptedDataBuffer(uint8_t *Cpy_DecryptedDataBufferPtr);
-Std_ReturnType Rte_ReadDecryptedDataBuffer (uint8_t **Cpy_DecryptedDataBufferPtr);
+Std_ReturnType Rte_WriteEncryptedDataBuffer(uint8_t *Cpy_EncryptedDataBufferPtr);
+Std_ReturnType Rte_ReadEncryptedDataBuffer (uint8_t **Cpy_EncryptedDataBufferPtr);
 
 /**************************************************************************/
-/*                         DecryptedDataBufferFlag Port                   */
+/*                         EncryptedDataBufferFlag Port                   */
 /**************************************************************************/
-Std_ReturnType Rte_WriteDecryptedDataBufferFlag(FlagType Cpy_DecryptedDataBufferFlag);
-Std_ReturnType Rte_ReadDecryptedDataBufferFlag (FlagType *Cpy_DecryptedDataBufferFlag);
+Std_ReturnType Rte_WriteEncryptedDataBufferFlag(FlagType Cpy_EncryptedDataBufferFlag);
+Std_ReturnType Rte_ReadEncryptedDataBufferFlag (FlagType *Cpy_EncryptedDataBufferFlag);
 
 /**************************************************************************/
 /*                         SystemState Port                               */

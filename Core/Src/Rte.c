@@ -21,8 +21,8 @@ static uint32_t Global_CrcValue                         = INITIAL_VALUE ;
 static uint32_t Global_CodeSizeValue                    = INITIAL_VALUE ;
 static uint8_t  Global_NodeId                           = INITIAL_VALUE ;
 static FlagType Global_HeaderAckFlag                  	= INITIAL_VALUE ;
-static uint8_t *Global_DecryptedDataBufferPtr           = NULL_PTR	 	;
-static FlagType Global_DecryptedDataBufferFlag        	= INITIAL_VALUE ;
+static uint8_t *Global_EncryptedDataBufferPtr           = NULL_PTR	 	;
+static FlagType Global_EncryptedDataBufferFlag        	= INITIAL_VALUE ;
 static SystemStateType Global_SystemStateMachine      	= INITIAL_VALUE ;
 static uint8_t Global_UserResponse                      = INITIAL_VALUE ;
 static uint8_t Global_UpdateProgress                    = INITIAL_VALUE ;
@@ -32,8 +32,8 @@ static PortStateType Global_CrcPortState                   = IDLE;
 static PortStateType Global_CodeSizePortState              = IDLE;
 static PortStateType Global_NodeIdPortState                = IDLE;
 static PortStateType Global_HeaderAckFlagState             = IDLE;
-static PortStateType Global_DecryptedDataBufferState       = IDLE;
-static PortStateType Global_DecryptedDataBufferFlagState   = IDLE;
+static PortStateType Global_EncryptedDataBufferState       = IDLE;
+static PortStateType Global_EncryptedDataBufferFlagState   = IDLE;
 static PortStateType Global_SystemStateMachineState        = IDLE;
 static PortStateType Global_UserResponsePortState          = IDLE;
 static PortStateType Global_UpdateProgressPortState        = IDLE;
@@ -211,20 +211,20 @@ Std_ReturnType Rte_ReadHeaderAckFlag(FlagType *Cpy_HeaderAckFlag)
 }
 
 /**************************************************************************/
-/*                         Decrypted Data Buffer Port                     */
+/*                         Encrypted Data Buffer Port                     */
 /**************************************************************************/
-Std_ReturnType Rte_WriteDecryptedDataBuffer(uint8_t *Cpy_DecryptedDataBufferPtr)
+Std_ReturnType Rte_WriteEncryptedDataBuffer(uint8_t *Cpy_EncryptedDataBufferPtr)
 {
 	Std_ReturnType Local_ReturnError = E_OK ;
 	
-	if ((Global_DecryptedDataBufferState == IDLE)&& (Cpy_DecryptedDataBufferPtr != NULL_PTR))
+	if ((Global_EncryptedDataBufferState == IDLE)&& (Cpy_EncryptedDataBufferPtr != NULL_PTR))
 	{
 		/* Lock the port to write */
-		Global_DecryptedDataBufferState = BUSY ;
+		Global_EncryptedDataBufferState = BUSY ;
 		/* Write the data to the port */
-		Global_DecryptedDataBufferPtr = Cpy_DecryptedDataBufferPtr ; 
+		Global_EncryptedDataBufferPtr = Cpy_EncryptedDataBufferPtr ;
 		/* Unlock the port after done writing */
-		Global_DecryptedDataBufferState = IDLE ;
+		Global_EncryptedDataBufferState = IDLE ;
 	}
 	else
 	{
@@ -233,18 +233,18 @@ Std_ReturnType Rte_WriteDecryptedDataBuffer(uint8_t *Cpy_DecryptedDataBufferPtr)
 	return Local_ReturnError ;
 }
 
-Std_ReturnType Rte_ReadDecryptedDataBuffer(uint8_t **Cpy_DecryptedDataBufferPtr)
+Std_ReturnType Rte_ReadEncryptedDataBuffer(uint8_t **Cpy_EncryptedDataBufferPtr)
 {
 	Std_ReturnType Local_ReturnError = E_OK ;
 	
-	if ( (Global_DecryptedDataBufferState == IDLE) && (Cpy_DecryptedDataBufferPtr != NULL_PTR))
+	if ( (Global_EncryptedDataBufferState == IDLE) && (Cpy_EncryptedDataBufferPtr != NULL_PTR))
 	{
 		/* Lock the port to write */
-		Global_DecryptedDataBufferState = BUSY ;
+		Global_EncryptedDataBufferState = BUSY ;
 		/* Write the data to the port */
-		 (*Cpy_DecryptedDataBufferPtr) = Global_DecryptedDataBufferPtr ; 
+		 (*Cpy_EncryptedDataBufferPtr) = Global_EncryptedDataBufferPtr ;
 		/* Unlock the port after done writing */
-		Global_DecryptedDataBufferState = IDLE ;
+		Global_EncryptedDataBufferState = IDLE ;
 	}
 	else
 	{
@@ -254,20 +254,20 @@ Std_ReturnType Rte_ReadDecryptedDataBuffer(uint8_t **Cpy_DecryptedDataBufferPtr)
 }
 
 /**************************************************************************/
-/*                         Decrypted Data Buffer Flag Port                */
+/*                         Encrypted Data Buffer Flag Port                */
 /**************************************************************************/
-Std_ReturnType Rte_WriteDecryptedDataBufferFlag(FlagType Cpy_DecryptedDataBufferFlag)
+Std_ReturnType Rte_WriteEncryptedDataBufferFlag(FlagType Cpy_EncryptedDataBufferFlag)
 {
 	Std_ReturnType Local_ReturnError = E_OK ;
 	
-	if (Global_DecryptedDataBufferFlagState == IDLE)
+	if (Global_EncryptedDataBufferFlagState == IDLE)
 	{
 		/* Lock the port to write */
-		Global_DecryptedDataBufferFlagState = BUSY ;
+		Global_EncryptedDataBufferFlagState = BUSY ;
 		/* Write the data to the port */
-		Global_DecryptedDataBufferFlag = Cpy_DecryptedDataBufferFlag ; 
+		Global_EncryptedDataBufferFlag = Cpy_EncryptedDataBufferFlag ;
 		/* Unlock the port after done writing */
-		Global_DecryptedDataBufferFlagState = IDLE ;
+		Global_EncryptedDataBufferFlagState = IDLE ;
 	}
 	else
 	{
@@ -276,18 +276,18 @@ Std_ReturnType Rte_WriteDecryptedDataBufferFlag(FlagType Cpy_DecryptedDataBuffer
 	return Local_ReturnError ;
 }
 
-Std_ReturnType Rte_ReadDecryptedDataBufferFlag(FlagType *Cpy_DecryptedDataBufferFlag)
+Std_ReturnType Rte_ReadEncryptedDataBufferFlag(FlagType *Cpy_EncryptedDataBufferFlag)
 {
 	Std_ReturnType Local_ReturnError = E_OK ;
 	
-	if ( (Global_DecryptedDataBufferFlagState == IDLE) && (Cpy_DecryptedDataBufferFlag != NULL_PTR) )
+	if ( (Global_EncryptedDataBufferFlagState == IDLE) && (Cpy_EncryptedDataBufferFlag != NULL_PTR) )
 	{
 		/* Lock the port to write */
-		Global_DecryptedDataBufferFlagState = BUSY ;
+		Global_EncryptedDataBufferFlagState = BUSY ;
 		/* Write the data to the port */
-		 (*Cpy_DecryptedDataBufferFlag) = Global_DecryptedDataBufferFlag ; 
+		 (*Cpy_EncryptedDataBufferFlag) = Global_EncryptedDataBufferFlag ;
 		/* Unlock the port after done writing */
-		Global_DecryptedDataBufferFlagState = IDLE ;
+		Global_EncryptedDataBufferFlagState = IDLE ;
 	}
 	else
 	{

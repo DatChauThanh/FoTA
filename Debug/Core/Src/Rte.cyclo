@@ -6,10 +6,10 @@
 ../Core/Src/Rte.c:150:16:Rte_ReadCrc	3
 ../Core/Src/Rte.c:173:16:Rte_WriteHeaderAckFlag	2
 ../Core/Src/Rte.c:193:16:Rte_ReadHeaderAckFlag	3
-../Core/Src/Rte.c:216:16:Rte_WriteDecryptedDataBuffer	3
-../Core/Src/Rte.c:236:16:Rte_ReadDecryptedDataBuffer	3
-../Core/Src/Rte.c:259:16:Rte_WriteDecryptedDataBufferFlag	2
-../Core/Src/Rte.c:279:16:Rte_ReadDecryptedDataBufferFlag	3
+../Core/Src/Rte.c:216:16:Rte_WriteEncryptedDataBuffer	3
+../Core/Src/Rte.c:236:16:Rte_ReadEncryptedDataBuffer	3
+../Core/Src/Rte.c:259:16:Rte_WriteEncryptedDataBufferFlag	2
+../Core/Src/Rte.c:279:16:Rte_ReadEncryptedDataBufferFlag	3
 ../Core/Src/Rte.c:302:16:Rte_WriteSystemState	2
 ../Core/Src/Rte.c:322:16:Rte_ReadSystemState	3
 ../Core/Src/Rte.c:345:16:Rte_WriteUserResponse	2

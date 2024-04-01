@@ -22,9 +22,9 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "Transmit.h"
-#include "Decrypt_Interface.h"
 #include "UserInterface_Interface.h"
 #include "ReceiveUpdate_Interface.h"
+#include "Encrypt_Interface.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -45,6 +45,8 @@
 /* Private variables ---------------------------------------------------------*/
 CAN_HandleTypeDef hcan;
 
+CRC_HandleTypeDef hcrc;
+
 I2C_HandleTypeDef hi2c1;
 
 UART_HandleTypeDef huart1;
@@ -64,6 +66,7 @@ static void MX_GPIO_Init(void);
 static void MX_CAN_Init(void);
 static void MX_I2C1_Init(void);
 static void MX_USART1_UART_Init(void);
+static void MX_CRC_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -103,22 +106,23 @@ int main(void)
   MX_GPIO_Init();
   MX_CAN_Init();
   MX_I2C1_Init();
-  //MX_USART1_UART_Init();
+  MX_USART1_UART_Init();
+  MX_CRC_Init();
   /* USER CODE BEGIN 2 */
   HAL_CAN_Start(&hcan);
 
-  //ReceiveUpdate_InitializeModule();
+  ReceiveUpdate_InitializeModule();
   Transmit_InitializeModule();
-  Decrypt_Address_Read_Init();
+  Encrypt_Address_Read_Init();
   UserInterface_InitializeModule();
 
 // Testing between GW and MCU
   RTE_WRITE_SYSTEM_STATE(SYS_DECRYPT);
+//  RTE_WRITE_SYSTEM_STATE(SYS_NEW_UPDATE_REQ);
   RTE_WRITE_HEADER_ACK_FLAG(HEADER_SET);
   RTE_WRITE_NODE_ID(1);
-  RTE_WRITE_CODE_SIZE(0x10);
-
-
+  RTE_WRITE_CODE_SIZE(0x2524);
+//  RTE_WRITE_CODE_SIZE(0x5524);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -128,11 +132,11 @@ int main(void)
 
 		RTE_READ_SYSTEM_STATE(&state);
 		if (state == SYS_REC_UPDATE){
-		//	ReceiveUpdate_MainFunction();
+			ReceiveUpdate_MainFunction();
 		}
 		else if (state == SYS_DECRYPT)
 		{
-			Decrypt_MainFunction();
+			Encrypt_MainFunction();
 		}
 		else if (state == SYS_SEND_UPDATE)
 		{
@@ -140,7 +144,7 @@ int main(void)
 		}
 		else
 		{
-			//do nothing
+			//Do Nothing
 		}
 		UserInterface_MainFunction();
     /* USER CODE END WHILE */
@@ -225,9 +229,9 @@ static void MX_CAN_Init(void)
   hcanfilter1.FilterActivation = CAN_FILTER_ENABLE;
   hcanfilter1.FilterBank = 0;  // which filter bank to use from the assigned ones
   hcanfilter1.FilterFIFOAssignment = CAN_FILTER_FIFO0;
-  hcanfilter1.FilterIdHigh = 0x10<<5;	//The STD ID starts from 5th bit in the ID HIGH Register
+  hcanfilter1.FilterIdHigh = 0x010<<5;	//The STD ID starts from 5th bit in the ID HIGH Register
   hcanfilter1.FilterIdLow = 0;
-  hcanfilter1.FilterMaskIdHigh = 0x10<<5;
+  hcanfilter1.FilterMaskIdHigh = 0x010<<5;
   hcanfilter1.FilterMaskIdLow = 0;
   hcanfilter1.FilterMode = CAN_FILTERMODE_IDMASK;
   hcanfilter1.FilterScale = CAN_FILTERSCALE_32BIT;
@@ -235,6 +239,32 @@ static void MX_CAN_Init(void)
 
   HAL_CAN_ConfigFilter(&hcan, &hcanfilter1);
   /* USER CODE END CAN_Init 2 */
+
+}
+
+/**
+  * @brief CRC Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_CRC_Init(void)
+{
+
+  /* USER CODE BEGIN CRC_Init 0 */
+
+  /* USER CODE END CRC_Init 0 */
+
+  /* USER CODE BEGIN CRC_Init 1 */
+
+  /* USER CODE END CRC_Init 1 */
+  hcrc.Instance = CRC;
+  if (HAL_CRC_Init(&hcrc) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN CRC_Init 2 */
+
+  /* USER CODE END CRC_Init 2 */
 
 }
 
@@ -332,11 +362,11 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(LED_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : SWITCH_BTN_Pin OK_BNT_Pin */
-  GPIO_InitStruct.Pin = SWITCH_BTN_Pin|OK_BNT_Pin;
+  /*Configure GPIO pins : OK_BNT_Pin SWITCH_BTN_Pin */
+  GPIO_InitStruct.Pin = OK_BNT_Pin|SWITCH_BTN_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
-  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
 /* USER CODE BEGIN MX_GPIO_Init_2 */
 /* USER CODE END MX_GPIO_Init_2 */

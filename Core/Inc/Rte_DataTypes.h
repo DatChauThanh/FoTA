@@ -23,7 +23,7 @@
 /* Buffer Flag values */ 
 #define    BUFFER_NOT_SET              0x00u
 #define    BUFFER_SET                  0x01u
-#define    DATA_BUFFER_SIZE            0x08u
+#define    DATA_BUFFER_SIZE            0x10u
 /* User response */
 #define   ACCEPT_UPDATE                0X01u
 #define   REFUSE_UPDATE                0X02u

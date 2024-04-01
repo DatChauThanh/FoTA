@@ -12,8 +12,8 @@
 
 /* Define to prevent recursive inclusion */
 
-#ifndef DECRYPT_INTERFACE_H
-#define DECRYPT_INTERFACE_H
+#ifndef ENCRYPT_INTERFACE_H
+#define ENCRYPT_INTERFACE_H
 
 /*****************************************************************************************/
 /*                                   Include headres                                     */
@@ -22,14 +22,12 @@
 
 /************************************************************************************
 
-*Name       :   Decrypt_MainFunction
+*Name       :   Encrypt_MainFunction
 
-*Description: * read decryoted data from rom 64 byte in each round
-              * deecrypt this buffer by AES module to plain Data
-              * privide Decrypt bufffer to sender receiver API in Rte 
-                 
+*Description: * read data from rom 16 byte in each round
+              * encryp this buffer by AES module to cypher Data
 							
-*Pre-Cond   :  buffer flag is not set & sys flag is assign to decrypt 				
+*Pre-Cond   :  buffer flag is not set & sys flag is assign to encrypt
 							
 *pos-Cond   :  buffer flag is set & sys flag is assign to send 
 
@@ -41,16 +39,16 @@
 
 ****************************************************************************************/                                   	
 
-void Decrypt_MainFunction (void) ;
+void Encrypt_MainFunction (void) ;
 
 /************************************************************************************
 
-*Name       :   Decrypt_Address_Read_Init
+*Name       :   Encrypt_Address_Read_Init
 
 *Description: Init Read address
 
 
-*Pre-Cond   :  buffer flag is not set & sys flag is assign to decrypt
+*Pre-Cond   :  buffer flag is not set & sys flag is assign to encrypt
 
 *pos-Cond   :  buffer flag is set & sys flag is assign to send
 
@@ -61,7 +59,7 @@ void Decrypt_MainFunction (void) ;
 *Return     :   void
 
 ****************************************************************************************/
-void Decrypt_Address_Read_Init(void) ;
+void Encrypt_Address_Read_Init(void) ;
 
 #endif
 /******************************************END OF FILE************************************/
