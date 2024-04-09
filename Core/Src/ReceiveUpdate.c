@@ -15,7 +15,7 @@ static uint32_t Global_CrcValue ;
 static uint32_t Global_SizeValue ;
 static uint8_t Global_NodeId ;
 static SystemStateType Global_SystemState ;
-static ReceiveUpdateStateType Global_RxInternalSate ;
+static ReceiveUpdateStateType Global_RxInternalState ;
 static uint8_t Global_HeaderBuffer[5];
 static uint8_t Global_HeaderReqByte;
 static uint8_t Global_NumberOfPackets ;
@@ -37,7 +37,7 @@ void ReceiveUpdate_InitializeModule(void)
 	Global_SizeValue 				= INITIAL_VALUE ;
 	Global_NodeId 					= INITIAL_VALUE ;
 	Global_SystemState 				= SYS_IDLE ;
-	Global_RxInternalSate 			= RX_IDLE ;
+	Global_RxInternalState 			= RX_IDLE ;
 	Global_NumberOfPackets			= INITIAL_VALUE ;
 	Global_RemainingBytes 			= INITIAL_VALUE;
 	Global_RxUserResponse 			= INITIAL_VALUE;
@@ -51,7 +51,7 @@ void ReceiveUpdate_InitializeModule(void)
 
 void ReceiveUpdate_MainFunction (void)
 {
-	switch(Global_RxInternalSate)
+	switch(Global_RxInternalState)
 	{
 		case RX_IDLE:
 		{
@@ -61,11 +61,11 @@ void ReceiveUpdate_MainFunction (void)
 			{
 				if (Global_RxUserResponse == ACCEPT_UPDATE)
 				{
-					Global_RxInternalSate = RX_ACCEPT_UPDATE ;
+					Global_RxInternalState = RX_ACCEPT_UPDATE ;
 				}
 				else if (Global_RxUserResponse == REFUSE_UPDATE)
 				{
-					Global_RxInternalSate = RX_REFUSE_UPDATE ;
+					Global_RxInternalState = RX_REFUSE_UPDATE ;
 				}
 				else
 				{
@@ -86,7 +86,7 @@ void ReceiveUpdate_MainFunction (void)
 			/*Erase Image to flash new firmware from Telematic unit*/
 			FR_Erase_Image(IMAGE_NEW_FIRMWARE);
 			/* Change Internal State */
-			Global_RxInternalSate = RX_RECEIVE_PACKET ;
+			Global_RxInternalState = RX_RECEIVE_PACKET ;
 			break;
 		}
 		/*****************************RX_REFUSE_UPDATE***********************************/
@@ -102,7 +102,7 @@ void ReceiveUpdate_MainFunction (void)
 			/* Enable Uart interrupt */
 			__HAL_UART_ENABLE_IT(&huart1, UART_IT_RXNE);
 			/* Change Internal State */
-			Global_RxInternalSate = RX_IDLE ;
+			Global_RxInternalState = RX_IDLE ;
 			break;
 		}
 		/*****************************RX_RECEIVE_HEADER***********************************/
@@ -134,7 +134,7 @@ void ReceiveUpdate_MainFunction (void)
 
 			/* Change State */
 			RTE_WRITE_SYSTEM_STATE(SYS_NEW_UPDATE_REQ);
-			Global_RxInternalSate = RX_IDLE ;
+			Global_RxInternalState = RX_IDLE ;
 
 			break;
 		}
@@ -169,7 +169,7 @@ void ReceiveUpdate_MainFunction (void)
 				Global_HeaderReqByte = LAST_PACKET_RECEIVED;
 				HAL_UART_Transmit(&huart1, &Global_HeaderReqByte, 1, HAL_MAX_DELAY);
 				/* Change Internal state */
-				Global_RxInternalSate = RX_END_STATE ;
+				Global_RxInternalState = RX_END_STATE ;
 				/* Update Received byte to calculate progress */
 				Global_ReceivedBytes += Global_RemainingBytes ;
 			}
@@ -182,7 +182,7 @@ void ReceiveUpdate_MainFunction (void)
 			Global_DownloadPercentage = ((float)Global_ReceivedBytes /(float) Global_SizeValue) ;
 			Global_DownloadUpdateProgeress = Global_DownloadPercentage * 100 ;
 			/* Write to RTE to Signal UserIntrface Module */
-			RTE_WRITE_DOWNLOAD_PROGRESS (Global_DownloadUpdateProgeress);
+			RTE_WRITE_DOWNLOAD_PROGRESS(Global_DownloadUpdateProgeress);
 			break;
 		}
 		/*****************************RX_END_STATE***********************************/
@@ -193,7 +193,7 @@ void ReceiveUpdate_MainFunction (void)
 			HAL_UART_Transmit(&huart1, &Global_HeaderReqByte, 1, HAL_MAX_DELAY);
 
 			/* Change System state */
-			RTE_WRITE_SYSTEM_STATE(SYS_DECRYPT);
+			RTE_WRITE_SYSTEM_STATE(SYS_ENCRYPT);
 
 			/* Reset Variables */
 			Global_CrcValue = INITIAL_VALUE;
@@ -212,9 +212,10 @@ void ReceiveUpdate_MainFunction (void)
 			FR_voidInitVariables();
 
 			/* Change system state */
-			Global_RxInternalSate = RX_IDLE;
+			Global_RxInternalState = RX_IDLE;
 
 			/* Enable Uart interrupt */
+			HAL_UART_Receive_IT(&huart1 , Global_HeaderBuffer , 1);
 			__HAL_UART_ENABLE_IT(&huart1, UART_IT_RXNE);
 			break;
 		}
@@ -247,7 +248,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *UartHandle)
 			{
 				/* Accept the request and change system state */
 				RTE_WRITE_SYSTEM_STATE(SYS_REC_UPDATE);
-				Global_RxInternalSate = RX_RECEIVE_HEADER;
+				Global_RxInternalState = RX_RECEIVE_HEADER;
 				//testing without user interface
 				//RTE_WRITE_SYSTEM_STATE(SYS_REC_UPDATE);
 				/* Disble the interrupt till receive the code by synch function */
@@ -278,7 +279,6 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *UartHandle)
 		Global_HeaderReqByte = INVALID_REQUEST;
 		HAL_UART_Transmit(&huart1, &Global_HeaderReqByte, 1, HAL_MAX_DELAY);
 	}
-
 }
 
 

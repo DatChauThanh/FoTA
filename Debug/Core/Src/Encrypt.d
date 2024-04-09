@@ -25,10 +25,12 @@ Core/Src/Encrypt.o: ../Core/Src/Encrypt.c ../Core/Inc/Encrypt_Interface.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash_ex.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_i2c.h \
+ ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_iwdg.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h \
- ../Core/Inc/Rte_SendUpdatePort.h ../Core/Inc/Rte_ReceiveUpatePort.h \
- ../Core/Inc/Rte_UserInterfacePort.h ../Core/Inc/aes.h
+ ../Core/Inc/Rte_SendUpdatePort.h ../Core/Inc/Rte_EncryptPort.h \
+ ../Core/Inc/Rte_ReceiveUpatePort.h ../Core/Inc/Rte_UserInterfacePort.h \
+ ../Core/Inc/aes.h
 ../Core/Inc/Encrypt_Interface.h:
 ../Core/Inc/Rte_EncryptPort.h:
 ../Core/Inc/Rte.h:
@@ -58,9 +60,11 @@ Core/Src/Encrypt.o: ../Core/Src/Encrypt.c ../Core/Inc/Encrypt_Interface.h \
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash_ex.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_i2c.h:
+../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_iwdg.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h:
 ../Core/Inc/Rte_SendUpdatePort.h:
+../Core/Inc/Rte_EncryptPort.h:
 ../Core/Inc/Rte_ReceiveUpatePort.h:
 ../Core/Inc/Rte_UserInterfacePort.h:
 ../Core/Inc/aes.h:

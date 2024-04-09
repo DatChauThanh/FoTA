@@ -7,7 +7,7 @@
 #include "FlashReprogram_Interface.h"
 /*Init Flash read / write Address volatile Variable */
 
-volatile uint32_t Global_WriteAddress ;
+static uint32_t Global_WriteAddress ;
 
 
 /*	FR interface Function */

@@ -189,6 +189,14 @@ void UserInterface_MainFunction (void)
 			
 			/* Return system state to idle */
 			RTE_WRITE_SYSTEM_STATE(SYS_IDLE);
+			/*Reset Gateway*/
+			hiwdg.Instance = IWDG;
+			hiwdg.Init.Prescaler = IWDG_PRESCALER_4;
+			hiwdg.Init.Reload = 4095;
+			if (HAL_IWDG_Init(&hiwdg) != HAL_OK)
+			{
+				Error_Handler();
+			}
 			break;
 		}
 		/*****************************DEFUALT (ERROR)***********************************/

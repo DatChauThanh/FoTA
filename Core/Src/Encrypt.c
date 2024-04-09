@@ -50,7 +50,7 @@ void Encrypt_MainFunction (void)
 		if (E_OK == status)
 		{			
 			/* make sure that system state is Decrypt  */
-			if (SYS_DECRYPT == Global_SystemState)
+			if (SYS_ENCRYPT == Global_SystemState)
 			{
 				  /*Read buffer Flag  "Data receive point "*/
 			    status = RTE_READ_ENCRYPTED_DATA_BUFFER_FLAG(&Global_BufferFlag);

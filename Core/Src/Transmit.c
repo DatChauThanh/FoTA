@@ -227,7 +227,7 @@ static Std_ReturnType Transmit_ConsumeTransmitData(void *Cpy_voidPtr)
 					// Reset Buffer flag
 					RTE_WRITE_ENCRYPTED_DATA_BUFFER_FLAG(RESET_FLAG);
 					// Change System State To De_crypt state.
-					RTE_WRITE_SYSTEM_STATE(SYS_DECRYPT);
+					RTE_WRITE_SYSTEM_STATE(SYS_ENCRYPT);
 				}
 				Static_InstallPercentage = ((float)Static_uint16PacketsCounter /(float) Static_uint16NumberOfPackets) ;
 				Static_InstallUpdateProgeress = Static_InstallPercentage * 100 ;
@@ -277,6 +277,7 @@ static Std_ReturnType Transmit_FinishingState(void *Cpy_voidPtr)
    uint8_t Local_uint8_tReceivedAck = INITIALIZE_WITH_ZERO;
    // Reset Buffer flag
    RTE_WRITE_ENCRYPTED_DATA_BUFFER_FLAG(RESET_FLAG);
+   RTE_WRITE_HEADER_ACK_FLAG(HEADER_NOT_SET);
    // Ack node of the end of code transmission
    CAN_IF_Transmit_UDS_Request(Static_uint8NodeId, UDS_GWY_ACKNOWLEDGE_FINISHING_SENDING_CODE);
    // Wait Ack from BL
@@ -307,7 +308,7 @@ static Std_ReturnType Transmit_ConsumeHeader(uint8_t *Cpy_NodeId,uint32_t *Cpy_S
    // Consume Header Information.     
    Local_ReturnStatus                = RTE_READ_NODE_ID  (Cpy_NodeId);
    Local_ReturnStatus                = RTE_READ_CODE_SIZE(Cpy_Size);
-   uint32_t* pBuffer = STORE_AREA_START_ADDRESS;
+   uint32_t* pBuffer = (uint32_t*)STORE_AREA_START_ADDRESS;
    *Cpy_Crc  = HAL_CRC_Calculate(&hcrc, pBuffer,*(Cpy_Size)/4);
    return Local_ReturnStatus;
 }

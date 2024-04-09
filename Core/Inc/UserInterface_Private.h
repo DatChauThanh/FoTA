@@ -22,7 +22,6 @@ typedef    uint8_t    UserInterfaceStateType ;
 #define     UI_REJECT_UPDATE      0x03u
 #define     UI_DOWNLOADING        0x04u
 #define     UI_INSTALLING         0x05u
-
 #define     UI_END_STATE          0x06u
 /********** Cursor state  ***********/
 typedef    uint8_t    UiCursorStateType ;

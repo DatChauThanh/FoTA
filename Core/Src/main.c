@@ -49,6 +49,8 @@ CRC_HandleTypeDef hcrc;
 
 I2C_HandleTypeDef hi2c1;
 
+IWDG_HandleTypeDef hiwdg;
+
 UART_HandleTypeDef huart1;
 
 /* USER CODE BEGIN PV */
@@ -117,11 +119,11 @@ int main(void)
   UserInterface_InitializeModule();
 
 // Testing between GW and MCU
-  RTE_WRITE_SYSTEM_STATE(SYS_DECRYPT);
-//  RTE_WRITE_SYSTEM_STATE(SYS_NEW_UPDATE_REQ);
-  RTE_WRITE_HEADER_ACK_FLAG(HEADER_SET);
-  RTE_WRITE_NODE_ID(1);
-  RTE_WRITE_CODE_SIZE(0x2524);
+//  RTE_WRITE_SYSTEM_STATE(SYS_ENCRYPT);
+////  RTE_WRITE_SYSTEM_STATE(SYS_NEW_UPDATE_REQ);
+//  RTE_WRITE_HEADER_ACK_FLAG(HEADER_SET);
+//  RTE_WRITE_NODE_ID(1);
+//  RTE_WRITE_CODE_SIZE(0x2524);
 //  RTE_WRITE_CODE_SIZE(0x5524);
   /* USER CODE END 2 */
 
@@ -134,7 +136,7 @@ int main(void)
 		if (state == SYS_REC_UPDATE){
 			ReceiveUpdate_MainFunction();
 		}
-		else if (state == SYS_DECRYPT)
+		else if (state == SYS_ENCRYPT)
 		{
 			Encrypt_MainFunction();
 		}
@@ -166,10 +168,11 @@ void SystemClock_Config(void)
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
   */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_LSI|RCC_OSCILLATORTYPE_HSE;
   RCC_OscInitStruct.HSEState = RCC_HSE_ON;
   RCC_OscInitStruct.HSEPredivValue = RCC_HSE_PREDIV_DIV1;
   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
+  RCC_OscInitStruct.LSIState = RCC_LSI_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
   RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL9;
@@ -301,6 +304,13 @@ static void MX_I2C1_Init(void)
   /* USER CODE END I2C1_Init 2 */
 
 }
+
+/**
+  * @brief IWDG Initialization Function
+  * @param None
+  * @retval None
+  */
+
 
 /**
   * @brief USART1 Initialization Function

@@ -32,7 +32,7 @@ extern "C" {
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "Rte_SendUpdatePort.h"
-#include <Rte_EncryptPort.h>
+#include "Rte_EncryptPort.h"
 #include "Rte_ReceiveUpatePort.h"
 #include "Rte_UserInterfacePort.h"
 
@@ -43,6 +43,7 @@ extern "C" {
 extern CRC_HandleTypeDef hcrc;
 extern I2C_HandleTypeDef hi2c1;
 extern CAN_HandleTypeDef hcan;
+extern IWDG_HandleTypeDef hiwdg;
 extern CAN_TxHeaderTypeDef TxHeader;
 extern CAN_RxHeaderTypeDef RxHeader;
 extern UART_HandleTypeDef huart1;
