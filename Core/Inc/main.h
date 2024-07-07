@@ -31,32 +31,35 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "FPEC_interface.h"
+#include "Rte_SendUpdatePort.h"
+#include "Rte_EncryptPort.h"
+#include "Rte_ReceiveUpatePort.h"
+#include "Rte_UserInterfacePort.h"
+
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
-
+extern CRC_HandleTypeDef hcrc;
+extern I2C_HandleTypeDef hi2c1;
+extern CAN_HandleTypeDef hcan;
+extern IWDG_HandleTypeDef hiwdg;
+extern CAN_TxHeaderTypeDef TxHeader;
+extern CAN_RxHeaderTypeDef RxHeader;
+extern UART_HandleTypeDef huart1;
+extern uint8_t TxData[8];
+extern uint8_t RxData[8];
+extern uint32_t TxMailbox;
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
-#define Bootloader_Address 0x08000000
 
 /* USER CODE END EC */
 
 /* Exported macro ------------------------------------------------------------*/
 /* USER CODE BEGIN EM */
-void DeInit();
-typedef void (application_t) (void);
 
-typedef struct
-{
-    uint32_t		stack_addr;     // Stack Pointer
-    application_t*	func_p;        // Program Counter
-} JumpStruct;
-
-void JumpToBootLoader(const uint32_t address);
 /* USER CODE END EM */
 
 /* Exported functions prototypes ---------------------------------------------*/
@@ -69,11 +72,10 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin);
 /* Private defines -----------------------------------------------------------*/
 #define LED_Pin GPIO_PIN_13
 #define LED_GPIO_Port GPIOC
-#define IRQ_LED_Pin GPIO_PIN_14
-#define IRQ_LED_GPIO_Port GPIOC
-#define IRQ_1_Pin GPIO_PIN_1
-#define IRQ_1_GPIO_Port GPIOA
-#define IRQ_1_EXTI_IRQn EXTI1_IRQn
+#define OK_BNT_Pin GPIO_PIN_3
+#define OK_BNT_GPIO_Port GPIOB
+#define SWITCH_BTN_Pin GPIO_PIN_4
+#define SWITCH_BTN_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
 
