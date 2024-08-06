@@ -1,4 +1,4 @@
-# CAN Protocol Bootloader
+# CAN Protocol FOTA Gateway
 
 ## Overview
 This project implements a Gateway application for microcontrollers. This allows firmware updates over the CAN bus to MCU in CAN network.
