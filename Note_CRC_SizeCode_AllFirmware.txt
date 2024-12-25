@@ -1,0 +1,8 @@
+collision : size 0x35f4 , crc  0xE326C2AB
+
+lighting : size: 0x2598, crc 0x1671CADA
+
+simple_blink_led collision : size 0x2524 , crc : 0xEC75EE66
+
+simple_blink_led lighting: size 0x2524 , crc :  0x756CF564
+

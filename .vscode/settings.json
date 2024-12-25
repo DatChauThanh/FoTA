@@ -1,5 +1,18 @@
 {
-    "stm32-for-vscode.openOCDPath": false,
-    "stm32-for-vscode.makePath": false,
-    "stm32-for-vscode.armToolchainPath": false
+  "files.associations": {
+    "can_interface.h": "c",
+    "bl_interface.h": "c",
+    "main.h": "c",
+    "rte.h": "c",
+    "rte_datatypes.h": "c",
+    "rte_sendupdateport.h": "c",
+    "rte_encryptport.h": "c",
+    "rte_receiveupateport.h": "c",
+    "rte_userinterfaceport.h": "c",
+    "encrypt_interface.h": "c",
+    "transmit_interface.h": "c",
+    "userinterface_interface.h": "c",
+    "transmit_private.h": "c",
+    "receiveupdate_interface.h": "c"
+  }
 }
