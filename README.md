@@ -1,54 +1,60 @@
-# CAN Protocol FOTA Gateway
+# ESP32 to STM32 CAN FOTA
 
-## Overview
+Firmware-over-the-air workspace for this update chain:
 
-This project implements a Gateway application for microcontrollers. This allows firmware updates over the CAN bus to MCU in CAN network.
+```text
+ESP32 Telematic -> STM32F103 Gateway -> STM32F103 Target Bootloader -> Target App
+```
 
-## Installation and Setup
+The STM32 side is intended to be developed with STM32CubeIDE and the STM32Cube HAL drivers. Cube-generated peripheral initialization stays in the normal HAL files, while the application logic is split into gateway, bootloader, transport, flash, encryption, RTE, and UI modules.
 
-1. Clone this repository:
-   https://github.com/DatChauThanh/FoTA.git
+## Repository Layout
 
-2. Install required tools and dependencies:
+| Path | Purpose |
+| --- | --- |
+| `1_BootLoader` | Target bootloader that receives firmware over CAN, programs flash, validates CRC, and jumps to the application |
+| `2_Gateway` | STM32 gateway that receives firmware from ESP32 over UART, stages it in flash, encrypts it, and forwards it over CAN |
+| `3_Lighting_System` | Example target application image |
+| `4_Collision_System` | Example target application image |
+| `5_Init_Blink_led` | Initial prebuilt binary images used during bring-up |
+| `docs` | Architecture, protocol, memory map, and STM32CubeIDE setup notes |
+| `Ref` | Datasheets, reports, and reference PDFs |
 
-- STM32CubeIDE
-- STLink Utility
-- Vscode
+## Hardware Baseline
 
-## Bootloader Protocol
+- STM32 board: STM32F103C8T6 / Blue Pill class board
+- STM32 clock: 72 MHz from 8 MHz HSE
+- Gateway UART: USART1, 115200 bps, 8N1
+- CAN speed: 500 kbps
+- Gateway display: SSD1306 over I2C1
+- Integrity: STM32 hardware CRC
+- Encryption: AES-128-CBC using tiny-AES style API
 
-- The bootloader's purpose is to update firmware on microcontrollers.
-- Safety features prevent self-erasure and ensure correct firmware writes.
+## Key Documentation
 
-## Security method
+- [System architecture](docs/ARCHITECTURE.md)
+- [Memory map](docs/MEMORY_MAP.md)
+- [FOTA protocol](docs/FOTA_PROTOCOL.md)
+- [STM32CubeIDE and HAL setup](docs/STM32CUBEIDE_HAL_SETUP.md)
 
-- AES-128-CBC mode using tinyAES lib.
+## Development Workflow
 
-## Error Detection method
+1. Open or create the relevant STM32CubeIDE project.
+2. Configure peripherals according to `docs/STM32CUBEIDE_HAL_SETUP.md`.
+3. Keep generated HAL initialization in CubeMX `USER CODE` regions.
+4. Keep application behavior inside the existing modules under each firmware directory.
+5. Build the target application with flash origin `0x08005000`.
+6. Generate the binary, compute/store size and CRC, then send it through ESP32 -> gateway -> bootloader.
 
-- Application CRC: Checksum for the application firmware.
+## Current Status
 
-## Information:
+This repo has working firmware modules from the original graduation project, plus project documentation and cleanup for continued HAL-based development. It is still missing repeatable CubeIDE metadata (`.ioc`, `.project`, linker scripts) and a host-side firmware packer, so those should be the next engineering tasks before treating this as a production-ready workspace.
 
-- Node identifier: 0x50 and 0x60.
-- Board name: STM32 Blue Pill
-- Model: f103c8t6
+## Credits
 
-## Performance Considerations
-
-- Driver module using Default HAL Driver of ST
-- CAN speed affects overall performance: 500kbps
-- UART speed 115200 bps.
-- STM32 Clock Frequency: 72MHz.
-
-Thank to
+Inspired by concepts and implementation ideas from:
 
 - Mohamed Hafez Mohamed
 - Abdelrhman Mosad Abdelhady
 - Osama Salah Hijazi
-
-Their project inspire and help me a lot in concept and implementation.
-https://github.com/mohamed-hafez-mohamed/Graduation_Project_2021
-
-If you have any questions, don't hesitate to ask!
-Contact: chaudat111022@gmail.com
+- https://github.com/mohamed-hafez-mohamed/Graduation_Project_2021

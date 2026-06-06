@@ -1,0 +1,27 @@
+# IDE and workspace state
+.idea/
+.vscode/.browse.c_cpp.db*
+.vscode/ipch/
+
+# STM32CubeIDE / Eclipse generated state
+.metadata/
+Debug/
+Release/
+*.launch
+*.su
+*.o
+*.d
+*.elf
+*.hex
+*.map
+*.list
+
+# Build outputs
+build/
+dist/
+*.bin
+!5_Init_Blink_led/*.bin
+
+# OS files
+Thumbs.db
+Desktop.ini
