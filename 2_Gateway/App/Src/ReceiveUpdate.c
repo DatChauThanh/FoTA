@@ -7,7 +7,8 @@
 #include "Rte_ReceiveUpatePort.h"
 #include "ReceiveUpdate_Interface.h"
 #include "ReceiveUpdate_Private.h"
-#include "FlashReprogram_Interface.h"
+#include "Flash_Interface.h"
+#include "GW_Platform.h"
 /**************************************************************************/
 /*                         Global Variables                              */
 /**************************************************************************/
@@ -45,7 +46,7 @@ void ReceiveUpdate_InitializeModule(void)
 	Global_DownloadUpdateProgeress 	= INITIAL_VALUE ;
 	Global_ReceivedBytes 			= INITIAL_VALUE;
 	/* Init ESP (uart) interrupt to receive requests */
-	HAL_UART_Receive_IT(&huart1 , Global_HeaderBuffer , 1);
+	GW_Platform_TelematicsReceiveIt(Global_HeaderBuffer, 1u);
 	FR_voidInitVariables();
 }
 
@@ -76,13 +77,14 @@ void ReceiveUpdate_MainFunction (void)
 			{
 				//Report ...
 			}
+			break;
 		}
 		/*****************************RX_ACCEPT_UPDATE ***********************************/
 		case RX_ACCEPT_UPDATE :
 		{
 			/* Inform ESP to accept request */
 			Global_HeaderReqByte = REQUEST_ACCEPTED;
-			HAL_UART_Transmit(&huart1, &Global_HeaderReqByte, 1, HAL_MAX_DELAY);
+			GW_Platform_TelematicsTransmit(&Global_HeaderReqByte, 1u, GW_PLATFORM_WAIT_FOREVER);
 			/*Erase Image to flash new firmware from Telematic unit*/
 			FR_Erase_Image(IMAGE_NEW_FIRMWARE);
 			/* Change Internal State */
@@ -94,13 +96,13 @@ void ReceiveUpdate_MainFunction (void)
 		{
 			/* Inform ESP to Reject request */
 			Global_HeaderReqByte = REQUEST_REFUSED;
-			HAL_UART_Transmit(&huart1, &Global_HeaderReqByte, 1, HAL_MAX_DELAY);
+			GW_Platform_TelematicsTransmit(&Global_HeaderReqByte, 1u, GW_PLATFORM_WAIT_FOREVER);
 			/* Initialize */
 			Global_RxUserResponse = INITIAL_VALUE;
 			/* Change System state */
 			RTE_WRITE_SYSTEM_STATE(SYS_IDLE);
 			/* Enable Uart interrupt */
-			__HAL_UART_ENABLE_IT(&huart1, UART_IT_RXNE);
+			GW_Platform_TelematicsEnableRxInterrupt();
 			/* Change Internal State */
 			Global_RxInternalState = RX_IDLE ;
 			break;
@@ -110,10 +112,10 @@ void ReceiveUpdate_MainFunction (void)
 		{
 			/* Inform ESP to send Header */
 			Global_HeaderReqByte = ESP_SEND_HEADER;
-			HAL_UART_Transmit(&huart1, &Global_HeaderReqByte, 1, HAL_MAX_DELAY);
+			GW_Platform_TelematicsTransmit(&Global_HeaderReqByte, 1u, GW_PLATFORM_WAIT_FOREVER);
 
 			/* Receive Header */
-			HAL_UART_Receive(&huart1, Global_HeaderBuffer, HEADER_SIZE, HAL_MAX_DELAY);
+			GW_Platform_TelematicsReceive(Global_HeaderBuffer, HEADER_SIZE, GW_PLATFORM_WAIT_FOREVER);
 
 			/* Process header */
 			Global_SizeValue = Global_HeaderBuffer[0] | (Global_HeaderBuffer[1] << SHIFT_BY_8) |(Global_HeaderBuffer[2] << SHIFT_BY_16) | (Global_HeaderBuffer[3] << SHIFT_BY_24);
@@ -130,7 +132,7 @@ void ReceiveUpdate_MainFunction (void)
 
 			/* Ack Header */
 			Global_HeaderReqByte = HEADER_RECEIVED;
-			HAL_UART_Transmit(&huart1, &Global_HeaderReqByte, 1, HAL_MAX_DELAY);
+			GW_Platform_TelematicsTransmit(&Global_HeaderReqByte, 1u, GW_PLATFORM_WAIT_FOREVER);
 
 			/* Change State */
 			RTE_WRITE_SYSTEM_STATE(SYS_NEW_UPDATE_REQ);
@@ -142,18 +144,18 @@ void ReceiveUpdate_MainFunction (void)
 		{
 			/* Inform ESP to send Package */
 			Global_HeaderReqByte = SEND_NEXT_PACKET;
-			HAL_UART_Transmit(&huart1, &Global_HeaderReqByte, 1, HAL_MAX_DELAY);
+			GW_Platform_TelematicsTransmit(&Global_HeaderReqByte, 1u, GW_PLATFORM_WAIT_FOREVER);
 
 			if (Global_NumberOfPackets > 0)
 			{
 				/* Receive packet */
-				HAL_UART_Receive(&huart1, Global_RxBuffer, PACKET_SIZE, HAL_MAX_DELAY);
+				GW_Platform_TelematicsReceive(Global_RxBuffer, PACKET_SIZE, GW_PLATFORM_WAIT_FOREVER);
 				Global_NumberOfPackets--;
 				/* Store Packet */
 				FR_FlashBlockToAddress(Global_RxBuffer , PACKET_SIZE);
 				/* Ack Packet */
 				Global_HeaderReqByte = PACKET_RECEIVED;
-				HAL_UART_Transmit(&huart1, &Global_HeaderReqByte, 1, HAL_MAX_DELAY);
+				GW_Platform_TelematicsTransmit(&Global_HeaderReqByte, 1u, GW_PLATFORM_WAIT_FOREVER);
 
 				/* Update Received byte to calculate progress */
 				Global_ReceivedBytes += PACKET_SIZE ;
@@ -162,12 +164,12 @@ void ReceiveUpdate_MainFunction (void)
 			else if ((Global_NumberOfPackets == 0) && (Global_RemainingBytes > 0) )
 			{
 				/* Receive packet */
-				HAL_UART_Receive(&huart1, Global_RxBuffer, Global_RemainingBytes, HAL_MAX_DELAY);
+				GW_Platform_TelematicsReceive(Global_RxBuffer, Global_RemainingBytes, GW_PLATFORM_WAIT_FOREVER);
 				/* Store Packet */
 				FR_FlashBlockToAddress(Global_RxBuffer , Global_RemainingBytes);
 				/* Ack last packet */
 				Global_HeaderReqByte = LAST_PACKET_RECEIVED;
-				HAL_UART_Transmit(&huart1, &Global_HeaderReqByte, 1, HAL_MAX_DELAY);
+				GW_Platform_TelematicsTransmit(&Global_HeaderReqByte, 1u, GW_PLATFORM_WAIT_FOREVER);
 				/* Change Internal state */
 				Global_RxInternalState = RX_END_STATE ;
 				/* Update Received byte to calculate progress */
@@ -190,7 +192,7 @@ void ReceiveUpdate_MainFunction (void)
 		{
 			/* Inform the Esp Code has been received */
 			Global_HeaderReqByte = ESP_DOWNLOAD_DONE;
-			HAL_UART_Transmit(&huart1, &Global_HeaderReqByte, 1, HAL_MAX_DELAY);
+			GW_Platform_TelematicsTransmit(&Global_HeaderReqByte, 1u, GW_PLATFORM_WAIT_FOREVER);
 
 			/* Change System state */
 			RTE_WRITE_SYSTEM_STATE(SYS_ENCRYPT);
@@ -215,8 +217,8 @@ void ReceiveUpdate_MainFunction (void)
 			Global_RxInternalState = RX_IDLE;
 
 			/* Enable Uart interrupt */
-			HAL_UART_Receive_IT(&huart1 , Global_HeaderBuffer , 1);
-			__HAL_UART_ENABLE_IT(&huart1, UART_IT_RXNE);
+			GW_Platform_TelematicsReceiveIt(Global_HeaderBuffer, 1u);
+			GW_Platform_TelematicsEnableRxInterrupt();
 			break;
 		}
 
@@ -231,7 +233,7 @@ void ReceiveUpdate_MainFunction (void)
 /**************************************************************************/
 /*                         Esp Uart Handler                               */
 /**************************************************************************/
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *UartHandle)
+void ReceiveUpdate_TelematicsRxIndication(void)
 {
 	Std_ReturnType Local_Error ;
 	//Testing
@@ -252,13 +254,13 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *UartHandle)
 				//testing without user interface
 				//RTE_WRITE_SYSTEM_STATE(SYS_REC_UPDATE);
 				/* Disble the interrupt till receive the code by synch function */
-				__HAL_UART_DISABLE_IT(&huart1, UART_IT_RXNE);
+				GW_Platform_TelematicsDisableRxInterrupt();
 			}
 			else
 			{
 				/* Refuse the update request as the system is not ready to receive updates */
 				Global_HeaderReqByte = GATEWAY_BUSY;
-				HAL_UART_Transmit(&huart1, &Global_HeaderReqByte, 1, HAL_MAX_DELAY);
+				GW_Platform_TelematicsTransmit(&Global_HeaderReqByte, 1u, GW_PLATFORM_WAIT_FOREVER);
 
 			}
 		}
@@ -266,7 +268,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *UartHandle)
 		{
 			/* to Hold the ESP from sending new requests for a while as system state can't be read */
 			Global_HeaderReqByte = SYSTEM_STATE_UNDIFINED;
-			HAL_UART_Transmit(&huart1, &Global_HeaderReqByte, 1, HAL_MAX_DELAY);
+			GW_Platform_TelematicsTransmit(&Global_HeaderReqByte, 1u, GW_PLATFORM_WAIT_FOREVER);
 		}
 		else
 		{
@@ -277,7 +279,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *UartHandle)
 	{
 		/* Response for unvalid requests */
 		Global_HeaderReqByte = INVALID_REQUEST;
-		HAL_UART_Transmit(&huart1, &Global_HeaderReqByte, 1, HAL_MAX_DELAY);
+		GW_Platform_TelematicsTransmit(&Global_HeaderReqByte, 1u, GW_PLATFORM_WAIT_FOREVER);
 	}
 }
 

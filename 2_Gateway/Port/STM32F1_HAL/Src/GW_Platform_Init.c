@@ -21,10 +21,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "Transmit_Interface.h"
-#include "UserInterface_Interface.h"
+#include "GW_Platform.h"
 #include "ReceiveUpdate_Interface.h"
-#include "Encrypt_Interface.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -63,7 +61,7 @@ uint32_t TxMailbox;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
-void SystemClock_Config(void);
+static void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_CAN_Init(void);
 static void MX_I2C1_Init(void);
@@ -75,19 +73,11 @@ static void MX_CRC_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+#define FOTA_PRV_CODE (11102002)
 /* USER CODE END 0 */
 
-/**
-  * @brief  The application entry point.
-  * @retval int
-  */
-int main(void)
+GW_Status_t GW_Platform_Init(void)
 {
-  /* USER CODE BEGIN 1 */
-  uint8_t state = SYS_IDLE;
-  /* USER CODE END 1 */
-
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
@@ -111,49 +101,21 @@ int main(void)
   MX_USART1_UART_Init();
   MX_CRC_Init();
   /* USER CODE BEGIN 2 */
-  HAL_CAN_Start(&hcan);
-
-  ReceiveUpdate_InitializeModule();
-  Transmit_InitializeModule();
-  Encrypt_Address_Read_Init();
-  UserInterface_InitializeModule();
+  if (HAL_CAN_Start(&hcan) != HAL_OK)
+  {
+    return GW_STATUS_ERROR;
+  }
 
   /* USER CODE END 2 */
 
-  /* Infinite loop */
-  /* USER CODE BEGIN WHILE */
-  while (1)
-  {
-
-		RTE_READ_SYSTEM_STATE(&state);
-		if (state == SYS_REC_UPDATE){
-			ReceiveUpdate_MainFunction();
-		}
-		else if (state == SYS_ENCRYPT)
-		{
-			Encrypt_MainFunction();
-		}
-		else if (state == SYS_SEND_UPDATE)
-		{
-			Transmit_MainFunction();
-		}
-		else
-		{
-			//Do Nothing
-		}
-		UserInterface_MainFunction();
-    /* USER CODE END WHILE */
-
-    /* USER CODE BEGIN 3 */
-  }
-  /* USER CODE END 3 */
+  return GW_STATUS_OK;
 }
 
 /**
   * @brief System Clock Configuration
   * @retval None
   */
-void SystemClock_Config(void)
+static void SystemClock_Config(void)
 {
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
@@ -379,6 +341,80 @@ static void MX_GPIO_Init(void)
 
 /* USER CODE END 4 */
 
+static uint32_t GW_Platform_MapTimeout(uint32_t timeout_ms)
+{
+	return (timeout_ms == GW_PLATFORM_WAIT_FOREVER) ? HAL_MAX_DELAY : timeout_ms;
+}
+
+static GW_Status_t GW_Platform_MapStatus(HAL_StatusTypeDef status)
+{
+	return (status == HAL_OK) ? GW_STATUS_OK : GW_STATUS_ERROR;
+}
+
+GW_Status_t GW_Platform_TelematicsReceiveIt(uint8_t *data, uint16_t length)
+{
+	return GW_Platform_MapStatus(HAL_UART_Receive_IT(&huart1, data, length));
+}
+
+GW_Status_t GW_Platform_TelematicsReceive(uint8_t *data, uint16_t length, uint32_t timeout_ms)
+{
+	return GW_Platform_MapStatus(HAL_UART_Receive(&huart1, data, length, GW_Platform_MapTimeout(timeout_ms)));
+}
+
+GW_Status_t GW_Platform_TelematicsTransmit(const uint8_t *data, uint16_t length, uint32_t timeout_ms)
+{
+	return GW_Platform_MapStatus(HAL_UART_Transmit(&huart1, (uint8_t *)data, length, GW_Platform_MapTimeout(timeout_ms)));
+}
+
+void GW_Platform_TelematicsEnableRxInterrupt(void)
+{
+	__HAL_UART_ENABLE_IT(&huart1, UART_IT_RXNE);
+}
+
+void GW_Platform_TelematicsDisableRxInterrupt(void)
+{
+	__HAL_UART_DISABLE_IT(&huart1, UART_IT_RXNE);
+}
+
+uint32_t GW_Platform_Crc32Words(uint32_t start_address, uint32_t word_count)
+{
+	return HAL_CRC_Calculate(&hcrc, (uint32_t *)start_address, word_count);
+}
+
+void GW_Platform_DelayMs(uint32_t delay_ms)
+{
+	HAL_Delay(delay_ms);
+}
+
+void GW_Platform_RequestReset(void)
+{
+	hiwdg.Instance = IWDG;
+	hiwdg.Init.Prescaler = IWDG_PRESCALER_4;
+	hiwdg.Init.Reload = 4095;
+	if (HAL_IWDG_Init(&hiwdg) != HAL_OK)
+	{
+		Error_Handler();
+	}
+}
+
+GW_ButtonState_t GW_Platform_GetSwitchButton(void)
+{
+	return (HAL_GPIO_ReadPin(SWITCH_BTN_GPIO_Port, SWITCH_BTN_Pin) == GPIO_PIN_RESET) ? GW_BUTTON_PRESSED : GW_BUTTON_RELEASED;
+}
+
+GW_ButtonState_t GW_Platform_GetOkButton(void)
+{
+	return (HAL_GPIO_ReadPin(OK_BNT_GPIO_Port, OK_BNT_Pin) == GPIO_PIN_RESET) ? GW_BUTTON_PRESSED : GW_BUTTON_RELEASED;
+}
+
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *UartHandle)
+{
+	if (UartHandle == &huart1)
+	{
+		ReceiveUpdate_TelematicsRxIndication();
+	}
+}
+
 /**
   * @brief  This function is executed in case of error occurrence.
   * @retval None
@@ -392,6 +428,11 @@ void Error_Handler(void)
   {
   }
   /* USER CODE END Error_Handler_Debug */
+}
+
+void GW_Platform_FatalError(void)
+{
+  Error_Handler();
 }
 
 #ifdef  USE_FULL_ASSERT

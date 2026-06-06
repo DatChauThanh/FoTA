@@ -27,6 +27,7 @@
 #include "Transmit_Interface.h"
 #include "Transmit_private.h"
 #include "CAN_Interface.h"
+#include "GW_Platform.h"
 /******************************************************************************
 * Module Preprocessor Constants
 *******************************************************************************/
@@ -308,8 +309,7 @@ static Std_ReturnType Transmit_ConsumeHeader(uint8_t *Cpy_NodeId,uint32_t *Cpy_S
    // Consume Header Information.     
    Local_ReturnStatus                = RTE_READ_NODE_ID  (Cpy_NodeId);
    Local_ReturnStatus                = RTE_READ_CODE_SIZE(Cpy_Size);
-   uint32_t* pBuffer = (uint32_t*)STORE_AREA_START_ADDRESS;
-   *Cpy_Crc  = HAL_CRC_Calculate(&hcrc, pBuffer,*(Cpy_Size)/4);
+   *Cpy_Crc  = GW_Platform_Crc32Words(STORE_AREA_START_ADDRESS, *(Cpy_Size) / 4u);
    return Local_ReturnStatus;
 }
 

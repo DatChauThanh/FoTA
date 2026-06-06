@@ -30,10 +30,6 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "Rte_SendUpdatePort.h"
-#include "Rte_EncryptPort.h"
-#include "Rte_ReceiveUpatePort.h"
-#include "Rte_UserInterfacePort.h"
 
 /* USER CODE END Includes */
 

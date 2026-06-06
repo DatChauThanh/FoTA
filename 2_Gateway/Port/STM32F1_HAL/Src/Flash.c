@@ -4,7 +4,8 @@
  *  Created on: Mar 14, 2024
  *      Author: Chau Thanh Dat
  */
-#include "FlashReprogram_Interface.h"
+#include "Flash_Interface.h"
+#include "main.h"
 /*Init Flash read / write Address volatile Variable */
 
 static uint32_t Global_WriteAddress ;
@@ -17,29 +18,47 @@ void FR_voidInitVariables (void)
 }
 
 
-HAL_StatusTypeDef FR_FlashBlockToAddress(const uint8_t *pData , uint16_t SizeOfDataBuffer)
+static GW_Status_t FR_MapStatus(HAL_StatusTypeDef status)
 {
-	HAL_StatusTypeDef	Local_retVal = HAL_OK;
+	return (status == HAL_OK) ? GW_STATUS_OK : GW_STATUS_ERROR;
+}
+
+GW_Status_t FR_FlashBlockToAddress(const uint8_t *pData , uint16_t SizeOfDataBuffer)
+{
+	GW_Status_t	Local_retVal = GW_STATUS_OK;
 	uint16_t Local_Word = INITIAL_ZERO ;
 	uint16_t Local_Counter = INITIAL_ZERO;
 
 	if (pData == NULL)
 	{
-		Local_retVal =  HAL_ERROR;
+		Local_retVal =  GW_STATUS_ERROR;
 	}
 	else
 	{
 		for(Local_Counter = INITIAL_ZERO; Local_Counter < SizeOfDataBuffer ;Local_Counter += FLASH_ADDRESS_STEP)
 		{
-			Local_Word = pData[Local_Counter] | (pData[Local_Counter+1] << 8) ;
-			FR_FlashHalfWordToAddress(Global_WriteAddress,Local_Word);
+			Local_Word = pData[Local_Counter];
+			if ((Local_Counter + 1u) < SizeOfDataBuffer)
+			{
+				Local_Word |= ((uint16_t)pData[Local_Counter + 1u] << 8);
+			}
+			else
+			{
+				Local_Word |= 0xFF00u;
+			}
+
+			Local_retVal = FR_FlashHalfWordToAddress(Global_WriteAddress, Local_Word);
+			if (Local_retVal != GW_STATUS_OK)
+			{
+				break;
+			}
 			Global_WriteAddress += FLASH_ADDRESS_STEP ;
 		}
 	}
 	return Local_retVal;
 }
 
-HAL_StatusTypeDef FR_Erase_Image(uint32_t ImageAddress)
+GW_Status_t FR_Erase_Image(uint32_t ImageAddress)
 {
 	HAL_StatusTypeDef	Local_retVal;
 
@@ -48,17 +67,17 @@ HAL_StatusTypeDef FR_Erase_Image(uint32_t ImageAddress)
 	Local_eraseInfo.TypeErase = FLASH_TYPEERASE_PAGES;
 	Local_eraseInfo.Banks = FLASH_BANK_1;
 	Local_eraseInfo.PageAddress = ImageAddress;
-	Local_eraseInfo.NbPages =	22;
+	Local_eraseInfo.NbPages = FLASH_STORE_NUM_PAGES;
 
 	HAL_FLASH_Unlock(); //Unlocks the flash memory
 	Local_retVal = HAL_FLASHEx_Erase(&Local_eraseInfo, &Local_u32PageError); //Deletes given sectors
 	HAL_FLASH_Lock();
 
-	return Local_retVal;
+	return FR_MapStatus(Local_retVal);
 }
 
 
-HAL_StatusTypeDef FR_FlashHalfWordToAddress(uint32_t Copy_Address , uint16_t Copy_u16DataAddress)
+GW_Status_t FR_FlashHalfWordToAddress(uint32_t Copy_Address , uint16_t Copy_u16DataAddress)
 {
 	HAL_StatusTypeDef	Local_retVal;
 
@@ -66,10 +85,10 @@ HAL_StatusTypeDef FR_FlashHalfWordToAddress(uint32_t Copy_Address , uint16_t Cop
 	Local_retVal = HAL_FLASH_Program(FLASH_TYPEPROGRAM_HALFWORD, Copy_Address, Copy_u16DataAddress);
 	HAL_FLASH_Lock();
 
-	return Local_retVal;
+	return FR_MapStatus(Local_retVal);
 }
 
-HAL_StatusTypeDef FR_FlashWordToAddress(uint32_t Copy_Address , uint32_t Copy_u32DataAddress)
+GW_Status_t FR_FlashWordToAddress(uint32_t Copy_Address , uint32_t Copy_u32DataAddress)
 {
 	HAL_StatusTypeDef	Local_retVal;
 
@@ -77,7 +96,7 @@ HAL_StatusTypeDef FR_FlashWordToAddress(uint32_t Copy_Address , uint32_t Copy_u3
 	Local_retVal = HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, Copy_Address, Copy_u32DataAddress);
 	HAL_FLASH_Lock();
 
-	return Local_retVal;
+	return FR_MapStatus(Local_retVal);
 
 }
 

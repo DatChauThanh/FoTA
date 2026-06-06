@@ -8,11 +8,13 @@
 
 /* Includes */
 #include "Rte_DataTypes.h"
+#include <stdint.h>
 
 #define E_NOT_OK 	0x01u
 #define E_OK 		0x00u
 
 #define   NULL_PTR      ((void *) 0)
+#define   UNUSED(x)     ((void)(x))
 
 typedef    uint8_t   PortStateType  ;
 typedef    uint8_t   Std_ReturnType  ;

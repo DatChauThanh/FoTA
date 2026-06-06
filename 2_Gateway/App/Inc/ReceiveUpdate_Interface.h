@@ -7,7 +7,6 @@
 
 #ifndef INC_RECEIVEUPDATE_INTERFACE_H_
 #define INC_RECEIVEUPDATE_INTERFACE_H_
-#include "main.h"
 /*************************************************************************
  * Name : ReceiveUpdate_InitializeModule
  * Parameter in : -
@@ -27,5 +26,6 @@ void ReceiveUpdate_InitializeModule(void);
  * Description: Module MainFunction for Prossessing receiving Update.
  ***************************************************************************/
 void ReceiveUpdate_MainFunction (void);
+void ReceiveUpdate_TelematicsRxIndication(void);
 
 #endif /* INC_RECEIVEUPDATE_INTERFACE_H_ */

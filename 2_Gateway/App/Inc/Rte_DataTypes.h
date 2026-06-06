@@ -5,7 +5,7 @@
 /*****************************************************/
 #ifndef RTE_DATA_TYPES_H
 #define RTE_DATA_TYPES_H
-#include "main.h"
+#include <stdint.h>
 
 /* SystemStateType  values */
 #define    SYS_IDLE                    0x0u

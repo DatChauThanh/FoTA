@@ -10,7 +10,8 @@
 /* Module includes */
 #include "UserInterface_Interface.h"
 #include "UserInterface_Private.h"
-#include "SSD1306.h"
+#include "GW_Display.h"
+#include "GW_Platform.h"
 #include <stdio.h>
 /**************************************************************************/
 /*                         Global Variables                              */
@@ -31,7 +32,7 @@ void UserInterface_InitializeModule(void)
 	Global_CursorState = UI_CURSOR_AT_ACCEPT ;
 	Global_DownloadProgress = 0 ;
 	/* Init Screan */
-	SSD1306_Init(); // initialize the display
+	GW_Display_Init(); // initialize the display
 	Interface_IdleScreen();
 }
 
@@ -122,7 +123,7 @@ void UserInterface_MainFunction (void)
 				if (100 == Global_DownloadProgress)
 				{
 					/* Clear Screan */
-					HAL_Delay(2000); // hold for 2 seconds
+					GW_Platform_DelayMs(2000); // hold for 2 seconds
 					Interface_CleanScrean();
 					Interface_InstallScreen();
 					/* Update internal state */
@@ -157,7 +158,7 @@ void UserInterface_MainFunction (void)
 					/* Update screan*/
 					Interface_DoneScreen();
 					/* Wait for a time */
-					HAL_Delay(2000);
+					GW_Platform_DelayMs(2000);
 					/* Update internal state */
 					Global_UiInternalState = UI_END_STATE ;
 					
@@ -190,13 +191,7 @@ void UserInterface_MainFunction (void)
 			/* Return system state to idle */
 			RTE_WRITE_SYSTEM_STATE(SYS_IDLE);
 			/*Reset Gateway*/
-			hiwdg.Instance = IWDG;
-			hiwdg.Init.Prescaler = IWDG_PRESCALER_4;
-			hiwdg.Init.Reload = 4095;
-			if (HAL_IWDG_Init(&hiwdg) != HAL_OK)
-			{
-				Error_Handler();
-			}
+			GW_Platform_RequestReset();
 			break;
 		}
 		/*****************************DEFUALT (ERROR)***********************************/
@@ -212,11 +207,11 @@ void UserInterface_MainFunction (void)
 static void Interface_IdleScreen (void)
 {
 	/* Set Backgroun color */
-	SSD1306_GotoXY (0,10); // goto 10, 10
-    SSD1306_Puts ("FOTA SYSTEM", &Font_11x18, 1); // print Hello
-    SSD1306_GotoXY (5, 30);
-    SSD1306_Puts ("Waiting Update!!", &Font_7x10, 1);
-    SSD1306_UpdateScreen(); // update screen
+	GW_Display_GotoXY (0,10); // goto 10, 10
+    GW_Display_Puts ("FOTA SYSTEM", GW_DISPLAY_FONT_11X18, 1); // print Hello
+    GW_Display_GotoXY (5, 30);
+    GW_Display_Puts ("Waiting Update!!", GW_DISPLAY_FONT_7X10, 1);
+    GW_Display_Update(); // update screen
 }
 
 
@@ -229,64 +224,64 @@ static void Interface_GetResponseScreen (void)
 	char Local_DateBuffer[4];
 	uint8_t Local_Estimate_time = Local_Codesize / Bandwidth_Avarage + 20;
 
-	SSD1306_GotoXY (20, 0);
-	SSD1306_Puts ("New firmware", &Font_7x10, 1);
-	SSD1306_GotoXY (20, 10);
-	SSD1306_Puts ("available for", &Font_7x10, 1);
+	GW_Display_GotoXY (20, 0);
+	GW_Display_Puts ("New firmware", GW_DISPLAY_FONT_7X10, 1);
+	GW_Display_GotoXY (20, 10);
+	GW_Display_Puts ("available for", GW_DISPLAY_FONT_7X10, 1);
 	switch(Local_NodeID)
 	{
 	  case 1:
 	  {
-		  SSD1306_GotoXY (20, 20);
-		  SSD1306_Puts ("Collision MCU", &Font_7x10, 1);
+		  GW_Display_GotoXY (20, 20);
+		  GW_Display_Puts ("Collision MCU", GW_DISPLAY_FONT_7X10, 1);
 		  break;
 	  }
 	  case 2:
 	  {
-		  SSD1306_GotoXY (20, 20);
-		  SSD1306_Puts ("Lighting MCU", &Font_7x10, 1);
+		  GW_Display_GotoXY (20, 20);
+		  GW_Display_Puts ("Lighting MCU", GW_DISPLAY_FONT_7X10, 1);
 		  break;
 	  }
 	  default:
 	  {
-		SSD1306_GotoXY (20, 20);
-		SSD1306_Puts ("Unknown MCU", &Font_7x10, 1);
+		GW_Display_GotoXY (20, 20);
+		GW_Display_Puts ("Unknown MCU", GW_DISPLAY_FONT_7X10, 1);
 		break;
 	  }
 	}
 
 
 	sprintf(Local_DateBuffer, "%d", Local_Estimate_time);
-	SSD1306_GotoXY (20, 30);
-	SSD1306_Puts ("Estimate: <", &Font_7x10, 1);
-	SSD1306_GotoXY (95, 30);
-	SSD1306_Puts (Local_DateBuffer, &Font_7x10, 1);
-	SSD1306_GotoXY (110, 30);
-	SSD1306_Puts ("s", &Font_7x10, 1);
+	GW_Display_GotoXY (20, 30);
+	GW_Display_Puts ("Estimate: <", GW_DISPLAY_FONT_7X10, 1);
+	GW_Display_GotoXY (95, 30);
+	GW_Display_Puts (Local_DateBuffer, GW_DISPLAY_FONT_7X10, 1);
+	GW_Display_GotoXY (110, 30);
+	GW_Display_Puts ("s", GW_DISPLAY_FONT_7X10, 1);
 
-	SSD1306_GotoXY (30, 40);
-	SSD1306_Puts ("Accept", &Font_7x10, 1);
-	SSD1306_GotoXY (30, 50);
-	SSD1306_Puts ("Reject", &Font_7x10, 1);
+	GW_Display_GotoXY (30, 40);
+	GW_Display_Puts ("Accept", GW_DISPLAY_FONT_7X10, 1);
+	GW_Display_GotoXY (30, 50);
+	GW_Display_Puts ("Reject", GW_DISPLAY_FONT_7X10, 1);
 
-	SSD1306_GotoXY (20, 40);
-	SSD1306_Puts (">", &Font_7x10, 1);	//Cursor init point to Accept
+	GW_Display_GotoXY (20, 40);
+	GW_Display_Puts (">", GW_DISPLAY_FONT_7X10, 1);	//Cursor init point to Accept
 
-	SSD1306_UpdateScreen(); //display
+	GW_Display_Update(); //display
 }
 
 static void Interface_DownloadingScreen (void)
 {
 	/* Writeing Text */
-	SSD1306_GotoXY (40, 10);
-	SSD1306_Puts ("Download", &Font_7x10, 1);
-	SSD1306_GotoXY (40, 20);
-	SSD1306_Puts ("  in", &Font_7x10, 1);
-	SSD1306_GotoXY (40, 30);
-	SSD1306_Puts ("Progress", &Font_7x10, 1);
-	SSD1306_GotoXY (50, 40);
-	SSD1306_Puts ("  0%", &Font_7x10, 1);
-	SSD1306_UpdateScreen(); //display
+	GW_Display_GotoXY (40, 10);
+	GW_Display_Puts ("Download", GW_DISPLAY_FONT_7X10, 1);
+	GW_Display_GotoXY (40, 20);
+	GW_Display_Puts ("  in", GW_DISPLAY_FONT_7X10, 1);
+	GW_Display_GotoXY (40, 30);
+	GW_Display_Puts ("Progress", GW_DISPLAY_FONT_7X10, 1);
+	GW_Display_GotoXY (50, 40);
+	GW_Display_Puts ("  0%", GW_DISPLAY_FONT_7X10, 1);
+	GW_Display_Update(); //display
 }
 
 static void Interface_UpdateDownloadingScreen (uint8_t Cpy_Progress)
@@ -295,64 +290,64 @@ static void Interface_UpdateDownloadingScreen (uint8_t Cpy_Progress)
 	char local_DateBuffer[4];
 	/* Clear Current Progress Text */
 	sprintf(local_DateBuffer, "%d", Cpy_Progress);
-	SSD1306_GotoXY (50, 40);
-	SSD1306_Puts ("   %", &Font_7x10, 1);
-	SSD1306_GotoXY (50, 40);
-	SSD1306_Puts (local_DateBuffer, &Font_7x10, 1);
-	SSD1306_UpdateScreen(); //display
+	GW_Display_GotoXY (50, 40);
+	GW_Display_Puts ("   %", GW_DISPLAY_FONT_7X10, 1);
+	GW_Display_GotoXY (50, 40);
+	GW_Display_Puts (local_DateBuffer, GW_DISPLAY_FONT_7X10, 1);
+	GW_Display_Update(); //display
 }
 
 static void Interface_DoneScreen (void)
 {
 	/* Writeing Text */
-	SSD1306_GotoXY (40, 10);
-	SSD1306_Puts ("Download", &Font_7x10, 1);
-	SSD1306_GotoXY (35, 20);
-	SSD1306_Puts ("Completed", &Font_7x10, 1);
-	SSD1306_GotoXY (50, 30);
-	SSD1306_Puts (" -_-  ", &Font_7x10, 1);
-	SSD1306_UpdateScreen(); //display
+	GW_Display_GotoXY (40, 10);
+	GW_Display_Puts ("Download", GW_DISPLAY_FONT_7X10, 1);
+	GW_Display_GotoXY (35, 20);
+	GW_Display_Puts ("Completed", GW_DISPLAY_FONT_7X10, 1);
+	GW_Display_GotoXY (50, 30);
+	GW_Display_Puts (" -_-  ", GW_DISPLAY_FONT_7X10, 1);
+	GW_Display_Update(); //display
 }
 
 static void Interface_InstallScreen(void)
 {
 	/* Update Screan */
-	SSD1306_GotoXY (40, 10);
-	SSD1306_Puts ("Installing", &Font_7x10, 1);
-	SSD1306_GotoXY (40, 20);
-	SSD1306_Puts (" Firmware", &Font_7x10, 1);
-	SSD1306_GotoXY (40, 30);
-	SSD1306_Puts (" to MCU ", &Font_7x10, 1);
-	SSD1306_UpdateScreen(); //display
+	GW_Display_GotoXY (40, 10);
+	GW_Display_Puts ("Installing", GW_DISPLAY_FONT_7X10, 1);
+	GW_Display_GotoXY (40, 20);
+	GW_Display_Puts (" Firmware", GW_DISPLAY_FONT_7X10, 1);
+	GW_Display_GotoXY (40, 30);
+	GW_Display_Puts (" to MCU ", GW_DISPLAY_FONT_7X10, 1);
+	GW_Display_Update(); //display
 }
 
 static void Interface_CleanScrean(void)
 {
-	SSD1306_Clear();
-	SSD1306_UpdateScreen();
+	GW_Display_Clear();
+	GW_Display_Update();
 }
 
 static void Interface_ProcessButton (void)
 {
 	while(1)
 	{
-	  if(HAL_GPIO_ReadPin(SWITCH_BTN_GPIO_Port, SWITCH_BTN_Pin) ==  GPIO_PIN_RESET)
+	  if(GW_Platform_GetSwitchButton() == GW_BUTTON_PRESSED)
 	  {
-		  while(HAL_GPIO_ReadPin(SWITCH_BTN_GPIO_Port, SWITCH_BTN_Pin) ==  GPIO_PIN_RESET);// Hold until button release
+		  while(GW_Platform_GetSwitchButton() == GW_BUTTON_PRESSED);// Hold until button release
 		  if(Global_CursorState == UI_CURSOR_AT_ACCEPT)
 		  {
-			  SSD1306_GotoXY (20, 40);
-			  SSD1306_Puts (" ", &Font_7x10, 1);	//Cursor init point to Accept
-			  SSD1306_GotoXY (20, 50);
-			  SSD1306_Puts (">", &Font_7x10, 1);	//Cursor init point to Accept
+			  GW_Display_GotoXY (20, 40);
+			  GW_Display_Puts (" ", GW_DISPLAY_FONT_7X10, 1);	//Cursor init point to Accept
+			  GW_Display_GotoXY (20, 50);
+			  GW_Display_Puts (">", GW_DISPLAY_FONT_7X10, 1);	//Cursor init point to Accept
 			  Global_CursorState = UI_CURSOR_AT_REJECT;
 		  }
 		  else if(Global_CursorState == UI_CURSOR_AT_REJECT)
 		  {
-			  SSD1306_GotoXY (20, 40);
-			  SSD1306_Puts (">", &Font_7x10, 1);	//Cursor init point to Accept
-			  SSD1306_GotoXY (20, 50);
-			  SSD1306_Puts (" ", &Font_7x10, 1);	//Cursor init point to Accept
+			  GW_Display_GotoXY (20, 40);
+			  GW_Display_Puts (">", GW_DISPLAY_FONT_7X10, 1);	//Cursor init point to Accept
+			  GW_Display_GotoXY (20, 50);
+			  GW_Display_Puts (" ", GW_DISPLAY_FONT_7X10, 1);	//Cursor init point to Accept
 			  Global_CursorState = UI_CURSOR_AT_ACCEPT;
 		  }
 		  else
@@ -360,11 +355,11 @@ static void Interface_ProcessButton (void)
 			  //error
 		  }
 	  }
-	  SSD1306_UpdateScreen(); //display
-	  HAL_Delay(100);
-	  if(HAL_GPIO_ReadPin(OK_BNT_GPIO_Port, OK_BNT_Pin) ==  GPIO_PIN_RESET)
+	  GW_Display_Update(); //display
+	  GW_Platform_DelayMs(100);
+	  if(GW_Platform_GetOkButton() == GW_BUTTON_PRESSED)
 	  {
-		 while(HAL_GPIO_ReadPin(OK_BNT_GPIO_Port, OK_BNT_Pin) ==  GPIO_PIN_RESET);// Hold until button release
+		 while(GW_Platform_GetOkButton() == GW_BUTTON_PRESSED);// Hold until button release
 		 if(Global_CursorState == UI_CURSOR_AT_ACCEPT)
 		 {
 			Global_UiInternalState = UI_ACCEPT_UPDATE ;
