@@ -11,7 +11,7 @@
 #ifndef BL_HEADER_H_
 #define BL_HEADER_H_
 //**************************Include***************************//
-#include "main.h"
+#include <stdint.h>
 //**************************Include***************************//
 
 //*************************Define****************************//
@@ -34,10 +34,6 @@
 #define LAST_PAGE_NUMBER_IN_BACKUP_IMAGE_REGION     59
 #define SIZE_IN_WORD_PER_BANK		 	5623		//word = 4 byte // page = 256 word => bank = page * 256 = 22*256
 
-
-//Vector Table Reg 
-#define SCB_VTOR_ADDRESS  (0xE000ED08)
-#define SCB_VTOR         *((volatile u32 *)SCB_VTOR_ADDRESS)
 
 //Flag status Image
 #define NUMBER_OF_FLAGS				  20
@@ -148,32 +144,6 @@ typedef void (*Application_t)(void);
 //*************************Function****************************//
 
 /******************************************************************************
-* Function : BL_ReadAddressData(uint32_t address)
-*//**
-* \b Description:
-*
-* This function is used to check data at input address
-*
-* PRE-CONDITION:  None
-*
-* POST-CONDITION: None
-*
-* @param [in]     uint32_t
-*
-* @return 		   uint32_t
-*
-* \b Example Example:
-* @code
-* 	BL_ReadAddressData(uint32_t address);
-*
-* @endcode
-*
-* @see BL_ReadAddressData(uint32_t address)
-*
-*******************************************************************************/
-static uint32_t BL_u32ReadAddressData(uint32_t address);
-
-/******************************************************************************
 * Function : BL_voidBootLoader_Init()
 *//** 
 * \b Description:
@@ -181,7 +151,7 @@ static uint32_t BL_u32ReadAddressData(uint32_t address);
 * This function is used to check flag to determine
 * Executing Bootloader or Executing one of images.
 *
-* PRE-CONDITION:  HAL_Init , SystemClock_Config , HAL_GPIO_Init
+* PRE-CONDITION:  Platform and transport adapters are initialized.
 *
 * POST-CONDITION: None
 *
@@ -207,7 +177,7 @@ void BL_voidBootLoader_Init(void);
 *
 * This function is used to check images for executing or not. 
 *
-* PRE-CONDITION:  FPEC Peripheral Initialized , HAL library .
+* PRE-CONDITION:  Platform flash and CRC adapters are initialized.
 *
 * POST-CONDITION: None
 *
