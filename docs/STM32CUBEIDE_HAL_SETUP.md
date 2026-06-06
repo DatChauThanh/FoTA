@@ -57,7 +57,7 @@ The current repository stores source files but does not yet include complete `.i
 
 1. Create a fresh STM32CubeIDE project for each firmware directory.
 2. Configure peripherals as listed above.
-3. Copy the corresponding `Inc`, `Src`, and `Startup` files into the CubeIDE project.
+3. Copy or link the corresponding source folders into the CubeIDE project. For bootloader and gateway, compile `Core/Src/main.c`, `App/Src`, `Port/STM32F1_HAL/Src`, the needed `ThirdParty/*/Src` folders, and `Startup`.
 4. Add tiny-AES sources to the include/source path if AES is used.
 5. Replace the generated linker script memory regions with the values in `docs/MEMORY_MAP.md`.
 6. Build each project independently and export `.bin` images for application update testing.

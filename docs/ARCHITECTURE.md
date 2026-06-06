@@ -30,7 +30,7 @@ The practical goal is to keep the STM32 firmware maintainable inside STM32CubeID
 
 ## Layering Rule
 
-Keep CubeMX generated initialization in `main.c`, `stm32f1xx_hal_msp.c`, and `stm32f1xx_it.c`. Application logic should live in independent modules under `Src`/`Inc`.
+Keep each firmware `Core` as a minimal entry point only. Platform initialization and vendor-specific generated code belong in `Port/[platform]`; firmware policy belongs in `App`; third-party code stays in `ThirdParty/...`.
 
 Recommended layering:
 
@@ -71,3 +71,4 @@ STM32Cube HAL
 - Replace blocking waits with timeout-based error handling before using this outside a lab bench.
 - Move AES keys out of source before any real deployment.
 - Add linker scripts and `.ioc` files for repeatable STM32CubeIDE import/build.
+- Keep bootloader policy code behind `BL_Platform.h` and `BL_Transport.h`; see `docs/BOOTLOADER_PORTING.md`.
